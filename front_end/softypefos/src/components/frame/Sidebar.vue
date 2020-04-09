@@ -33,7 +33,7 @@
       </v-list>
       <template v-slot:append>
         <div class="pa-2">
-          <v-btn block @click="logout()">
+          <v-btn block @click="logout">
             <v-icon>mdi-logout</v-icon>
             <strong>Logout</strong>
           </v-btn>
@@ -48,11 +48,12 @@
 }
 </style>
 <script>
-// import ROUTER from "@/router";
+import ROUTER from "@/router";
 
 export default {
   data() {
     return {
+      loading: true,
       items: [
         {
           title: "Dashboard",
@@ -72,7 +73,10 @@ export default {
 
   methods: {
     logout() {
-      console.log("sd");
+      this.loading = !this.loading;
+      this.$emit("logout",this.loading)
+      this.$swal.fire("You are now logged out.", " ", "success");
+      ROUTER.push("/home");
     }
   }
 };

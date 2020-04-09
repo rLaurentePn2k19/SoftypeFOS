@@ -11,7 +11,7 @@
       :transition="transition"
     >
       <template v-slot:activator>
-        <v-btn v-model="fab" dark text> 
+        <v-btn v-model="fab" dark text>
           <v-icon v-if="fab">mdi-close</v-icon>
           <v-icon v-else>mdi-dots-vertical</v-icon>
         </v-btn>
@@ -22,9 +22,6 @@
       </v-btn>
       <v-btn color="error" fab small>
         <v-icon>mdi-delete</v-icon>
-      </v-btn>
-      <v-btn color="danger" fab small @click="logout">
-        <v-icon>mdi-logout</v-icon>
       </v-btn>
     </v-speed-dial>
   </div>
@@ -38,8 +35,7 @@
 </style>
 
 <script>
-
-import ROUTER from '@/router';
+// import ROUTER from "@/router";
 import AddFood from "@/components/modules/admin/AddFood.vue";
 export default {
   components: {
@@ -91,10 +87,10 @@ export default {
     // updateDashboard(item) {
     //   this.$emit("uploaded", item);
     // }
-    logout() {
-      this.$swal.fire("You are now logged out.", " ", "success");
-      ROUTER.push("/home");
-    }
+    // logout() {
+    // this.$swal.fire("You are now logged out.", " ", "success");
+    // ROUTER.push("/home");
+    // }
   }
 };
 </script>

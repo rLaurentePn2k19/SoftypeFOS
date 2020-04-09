@@ -2,16 +2,16 @@
   <v-app-bar app color="orange" dark>
     <v-app-bar-nav-icon
       v-if="$route.name =='dashboard' || $route.name =='orders' "
-      @click="test"
-      v-show="!isNav"
+      @click="showNav"
+      v-show="!hide"
     ></v-app-bar-nav-icon>
     <v-btn
       v-if="$route.name =='dashboard' || $route.name =='orders' "
       text
       fab
       small
-      v-show="isNav"
-      @click="test"
+      v-show="hide"
+      @click="showNav"
     >
       <v-icon>mdi-arrow-left-bold</v-icon>
     </v-btn>
@@ -40,6 +40,8 @@
       -->
     </div>
 
+    <v-spacer v-for="n in 10" :key="n"></v-spacer>
+    <!-- <v-spacer></v-spacer>
     <v-spacer></v-spacer>
     <v-spacer></v-spacer>
     <v-spacer></v-spacer>
@@ -63,9 +65,7 @@
     <v-spacer></v-spacer>
     <v-spacer></v-spacer>
     <v-spacer></v-spacer>
-    <v-spacer></v-spacer>
-    <v-spacer></v-spacer>
-    <v-spacer></v-spacer>
+    <v-spacer></v-spacer> -->
 
     <v-btn
       v-on:click="home"
@@ -101,7 +101,7 @@ export default {
   name: "test",
   data() {
     return {
-      isNav: true
+      hide: true
     };
   },
   components: {
@@ -115,9 +115,9 @@ export default {
     home() {
       ROUTER.push("/home");
     },
-    test() {
-      this.isNav = !this.isNav;
-      this.$emit("testAction", this.isNav);
+    showNav() {
+      this.hide = !this.hide;
+      this.$emit("showSideNavEvent", this.hide);
     }
   }
 };

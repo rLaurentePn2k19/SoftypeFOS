@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <Header v-on:testAction="testNav"></Header>
+    <Header v-on:showSideNavEvent="showSideNav"></Header>
     <Sidebar v-if="$route.name =='dashboard' && isNav || $route.name =='orders' && isNav "></Sidebar>
     <v-content>
       <Body></Body>
@@ -12,33 +12,31 @@
 </style>
 
 <script>
-// import HelloWorld from './components/HelloWorld';
 import Sidebar from "@/components/frame/Sidebar.vue";
 import Header from "./components/frame/Header.vue";
 import Body from "./components/frame/Body.vue";
 
 export default {
   name: "App",
-  data(){
-    return{
-      testVar: true
-    }
+  data() {
+    return {
+      show: true
+    };
   },
   components: {
-    // HelloWorld,
     Header,
     Body,
     Sidebar
   },
-  methods:{
-    testNav(e){
-      this.testVar = e;
+  methods: {
+    showSideNav(e) {
+      this.show = e;
     }
   },
-  computed:{
-    isNav(){
-      return this.testVar;
-    } 
+  computed: {
+    isNav() {
+      return this.show;
+    }
   }
 };
 </script>
