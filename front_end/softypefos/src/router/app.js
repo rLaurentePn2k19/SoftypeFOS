@@ -25,5 +25,21 @@ export default {
             tokenRequired: true
         }
     },
+    {
+        path: '/orders',
+        name: 'orders',
+        component: resolve => require(['@/components/modules/admin/Orders.vue'], resolve),
+        meta: {
+            tokenRequired: true
+        }
+    },
+    {
+        path: '/*',
+        name: '404',
+        component: resolve => require(['@/components/modules/user/Error.vue'], resolve),
+        meta: {
+            tokenRequired: false
+        }
+    }
     ]
 }

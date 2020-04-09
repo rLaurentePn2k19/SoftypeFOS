@@ -1,33 +1,44 @@
 <template>
-<div id="app">
   <v-app>
-  <Header></Header>
+    <Header v-on:testAction="testNav"></Header>
+    <Sidebar v-if="$route.name =='dashboard' && isNav || $route.name =='orders' && isNav "></Sidebar>
     <v-content>
-      <!-- <Sidebar v-if="$route.name =='dashboard' " ></Sidebar> -->
       <Body></Body>
     </v-content>
   </v-app>
-  </div>
 </template>
 
 <style>
-
 </style>
 
 <script>
 // import HelloWorld from './components/HelloWorld';
-// import Sidebar from "@/components/frame/Sidebar.vue";
-
-import Header from './components/frame/Header.vue';
-import Body from './components/frame/Body.vue';
+import Sidebar from "@/components/frame/Sidebar.vue";
+import Header from "./components/frame/Header.vue";
+import Body from "./components/frame/Body.vue";
 
 export default {
-  name: 'App',
+  name: "App",
+  data(){
+    return{
+      testVar: true
+    }
+  },
   components: {
     // HelloWorld,
     Header,
     Body,
-    // Sidebar
+    Sidebar
+  },
+  methods:{
+    testNav(e){
+      this.testVar = e;
+    }
+  },
+  computed:{
+    isNav(){
+      return this.testVar;
+    } 
   }
 };
 </script>

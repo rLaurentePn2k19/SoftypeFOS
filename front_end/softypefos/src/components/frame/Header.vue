@@ -1,6 +1,22 @@
 <template>
   <v-app-bar app color="orange" dark>
-    <div class="d-flex align-center" v-on:click="home" style="cursor: pointer;">
+    <v-app-bar-nav-icon
+      v-if="$route.name =='dashboard' || $route.name =='orders' "
+      @click="test"
+      v-show="!isNav"
+    ></v-app-bar-nav-icon>
+    <v-btn
+      v-if="$route.name =='dashboard' || $route.name =='orders' "
+      text
+      fab
+      small
+      v-show="isNav"
+      @click="test"
+    >
+      <v-icon>mdi-arrow-left-bold</v-icon>
+    </v-btn>
+
+    <div class="d-flex align-center">
       <v-img
         alt="Vuetify Logo"
         class="shrink mr-2"
@@ -23,6 +39,7 @@
         />
       -->
     </div>
+
     <v-spacer></v-spacer>
     <v-spacer></v-spacer>
     <v-spacer></v-spacer>
@@ -51,6 +68,16 @@
     <v-spacer></v-spacer>
 
     <v-btn
+      v-on:click="home"
+      target="_blank"
+      text
+      v-if="$route.name =='foods' || $route.name =='home' "
+    >
+      <span class="mr-2">Home</span>
+      <v-icon>mdi-home</v-icon>
+    </v-btn>
+    <v-divider class="mx-4" inset vertical v-if="$route.name =='foods' || $route.name =='home' "></v-divider>
+    <v-btn
       v-on:click="signin"
       target="_blank"
       text
@@ -60,7 +87,7 @@
       <v-icon>mdi-food-variant</v-icon>
     </v-btn>
     <v-divider class="mx-4" inset vertical v-if="$route.name =='foods' || $route.name =='home' "></v-divider>
-    <Buttons v-if="$route.name =='dashboard'"></Buttons>
+    <Buttons v-if="$route.name =='dashboard' || $route.name =='orders'"></Buttons>
     <AdminLogin v-else></AdminLogin>
   </v-app-bar>
 </template>
@@ -72,6 +99,11 @@ import AdminLogin from "@/components/modules/admin/Login.vue";
 
 export default {
   name: "test",
+  data() {
+    return {
+      isNav: true
+    };
+  },
   components: {
     AdminLogin,
     Buttons
@@ -82,6 +114,10 @@ export default {
     },
     home() {
       ROUTER.push("/home");
+    },
+    test() {
+      this.isNav = !this.isNav;
+      this.$emit("testAction", this.isNav);
     }
   }
 };
