@@ -10,7 +10,7 @@
     <v-item-group multiple>
       <v-container>
         <v-row>
-          <v-col v-for="food in foods" :key="food.title" cols="12" md="4">
+          <v-col v-for="food in foods" :key="food._id" cols="12" md="4">
             <v-item v-slot:default="{ active, toggle }">
               <v-card
                 :color="active ? 'primary' : ''"
@@ -27,10 +27,11 @@
                 >
                   <v-scroll-y-transition>
                     <div v-if="active" class="display-3 flex-grow-1 text-center">
-                      <v-btn color="primary" medium @click="added">
-                        {{textButton}}
-                        <!-- <v-icon>mdi-check</v-icon> -->
-                      </v-btn>
+                      <v-btn
+                        color="primary"
+                        medium
+                        @click="added(food._id)"
+                      >{{food.selected ? "Added" : "Add" }}</v-btn>
                       <v-form>
                         <v-text-field
                           label="Quantity"
@@ -38,7 +39,8 @@
                           :prepend-icon="'mdi-plus'"
                           type="number"
                           class="test"
-                          value="1"
+                          v-model="food.qty"
+                          @change="test(food._id)"
                           outlined
                         />
                       </v-form>
@@ -50,7 +52,7 @@
             </v-item>
           </v-col>
         </v-row>
-        <Order/>
+        <Order :Orders="order_foods"></Order>
       </v-container>
     </v-item-group>
   </v-lazy>
@@ -71,17 +73,51 @@ import Order from "@/components/modules/user/Order.vue";
 export default {
   data() {
     return {
-      textButton: "Add",
+      food_qty: 1,
+      order_foods: [],
       foods: [
         {
+          _id: 1,
+          qty: 1,
+          selected: false,
           title: "Tinolang Manok",
           image: require("@/assets/tinolangmanok.jpg")
         },
-        { title: "Adobong Manok", image: require("@/assets/adobongmanok.jpg") },
-        { title: "Pork Chop", image: require("@/assets/porkchop.jpg") },
-        { title: "Ampalaya w/ egg", image: require("@/assets/ampalaya.jpg") },
-        { title: "Monggos", image: require("@/assets/monggos.jpg") },
-        { title: "Lumpia", image: require("@/assets/lumpia.jpg") }
+        {
+          _id: 2,
+          qty: 1,
+          selected: false,
+          title: "Adobong Manok",
+          image: require("@/assets/adobongmanok.jpg")
+        },
+        {
+          _id: 3,
+          qty: 1,
+          selected: false,
+          title: "Pork Chop",
+          image: require("@/assets/porkchop.jpg")
+        },
+        {
+          _id: 4,
+          qty: 1,
+          selected: false,
+          title: "Ampalaya w/ egg",
+          image: require("@/assets/ampalaya.jpg")
+        },
+        {
+          _id: 5,
+          qty: 1,
+          selected: false,
+          title: "Monggos",
+          image: require("@/assets/monggos.jpg")
+        },
+        {
+          _id: 6,
+          qty: 1,
+          selected: false,
+          title: "Lumpia",
+          image: require("@/assets/lumpia.jpg")
+        }
       ],
       isActive: false
     };
@@ -89,19 +125,30 @@ export default {
   components: {
     Order
   },
-  // beforeMount(){
-  //   alert("this is beforeMount");
-  // },
-  // mounted(){
-  //   alert("mounted");
-  // },
-
-  // beforeDestroy(){
-  //   alert("beforeDestroy")
-  // },
+  watch: {
+    foods() {
+      return this.foods;
+    }
+  },
   methods: {
-    added() {
-      this.textButton = "Added";
+    added(id) {
+      this.foods.filter(food => {
+        if (food._id == id) {
+          food.selected = true;
+          food.quantity = food.qty
+          this.order_foods.push(food)
+          food.qty = 1
+          console.table(this.order_foods)
+        }
+      });
+      console.log(this.foods);
+    },
+    test(id){
+      this.order_foods.forEach(order => {
+        if(order._id == id){
+          order.quantity = order.qty
+        }
+      });
     }
   }
 };

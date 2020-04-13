@@ -31,12 +31,12 @@
           <v-list flat>
             <v-subheader>Viand/s you order:</v-subheader>
             <v-list-item-group v-model="item">
-              <v-list-item v-for="(item, i) in items" :key="i">
+              <v-list-item v-for="(order, i) in Orders" :key="i">
                 <v-list-item-icon>
-                  <v-icon v-text="item.icon"></v-icon>
+                  <v-icon color="success">mdi-check</v-icon>
                 </v-list-item-icon>
                 <v-list-item-content>
-                  <v-list-item-title v-text="item.text +' : '+ item.quantity "></v-list-item-title>
+                  <v-list-item-title v-text="order.title +' : '+ order.quantity "></v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </v-list-item-group>
@@ -62,16 +62,21 @@
 
 <script>
 export default {
+  props: {
+    Orders: {
+      type: Array
+    }
+  },
   data() {
     return {
       dialog: false,
       nickname: "",
-      item: 1,
-      items: [
-        { text: "Adobo", quantity: "1", icon: "mdi-check" },
-        { text: "Lumpia", quantity: "2", icon: "mdi-check" },
-        { text: "Ampalaya", quantity: "3", icon: "mdi-check" }
-      ]
+      item: 1
+      // items: [
+      //   { text: "Adobo", quantity: "1", icon: "mdi-check" },
+      //   { text: "Lumpia", quantity: "2", icon: "mdi-check" },
+      //   { text: "Ampalaya", quantity: "3", icon: "mdi-check" }
+      // ]
     };
   },
   methods: {

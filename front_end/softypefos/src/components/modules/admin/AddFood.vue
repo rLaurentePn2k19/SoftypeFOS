@@ -17,23 +17,22 @@
           <v-form>
             <v-text-field
               label="Viand name"
-              name="viand"
               :prepend-icon="'mdi-food-variant'"
-              type="text"
-              v-model="viand.name"
+              v-model="name"
               :rules="[rules.required]"
               @click:append="show1 = !show1"
             />
-            <v-btn class="file_button" @click.prevent="$refs.uploader.click()">
+            <!-- <v-btn class="file_button" @click.prevent="$refs.uploader.click()">
               <v-icon>mdi-camera</v-icon>Click to upload
             </v-btn>
-            <input ref="uploader" class="d-none" type="file" accept="image/*" @change="onUpload">
+            <input ref="uploader" class="d-none" type="file" accept="image/*" @change="onUpload">-->
+            <v-file-input dense v-model="imgs" multiple label="Upload Image" accept="/*image"></v-file-input>
           </v-form>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="error" @click="cancel">Cancel</v-btn>
-          <v-btn color="success" @click="onUpload">Done</v-btn>
+          <v-btn color="success" @click="uploadViand">Done</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -42,16 +41,16 @@
 
 
 <script>
+import axios from "axios";
+
 export default {
   data() {
     return {
       dialog: false,
       show1: false,
       file: "",
-      viand: {
-        name: "",
-        img: []
-      },
+      imgs: [],
+      name: "",
       rules: {
         required: value => !!value || "Required."
         // min: v => v.length >= 8 || "Min 8 characters",
@@ -74,13 +73,13 @@ export default {
         }
       });
       const emp =
-        this.viand.name == "" || this.file == null
+        this.name == "" || this.file == null
           ? ((this.dialog = true),
             this.$swal.fire("Oops..", " Please input the field.", "error"))
           : ((this.dialog = false),
             Toast.fire({
               icon: "success",
-              title: `${this.viand.name} is Successfully added.`
+              title: `${this.name} is Successfully added.`
             }),
             // this.$swal.fire(`${this.viand.name} is successfully added.`, " ", "success"),
             console.log(this.file));
@@ -88,7 +87,39 @@ export default {
     },
     cancel() {
       this.dialog = false;
-      this.viand.name = "";
+      this.name = "";
+    },
+    uploadViand() {
+      if (this.name == null) {
+        this.dialog = true;
+        this.$swal.fire({
+          title: "Please fill up the provided fields.",
+          width: 500,
+          padding: "3em",
+          backdrop: `rgba(255,0,0,0.4)`
+        });
+      } else {
+        this.loading = true;
+        var _viand = {
+          name: this.name
+        };
+        let formData = new FormData();
+        formData.append("img", this.imgs);
+        formData.append("viand", JSON.stringify(_viand));
+        axios
+          .post(`http://localhost:4000/admin/addviand`, formData)
+          .then(res => {
+            setTimeout(() => (this.loading = false), 2000);
+            setTimeout(() => (this.dialog = false), 2000);
+            console.log(res.data);
+            this.$emit("uploaded", res.data);
+            this.name = null;
+            this.imgs = null;
+          })
+          .catch(error => {
+            console.error("file upload failed", error);
+          });
+      }
     }
   }
 };

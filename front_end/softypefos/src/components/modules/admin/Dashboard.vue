@@ -9,7 +9,7 @@
           <v-row>
             <v-col v-for="food in foods" :key="food.name" cols="12" md="4">
               <v-item>
-                <MyFood :foodDetails="food"></MyFood>
+                <MyFood :foodDetails="food" @uploaded="updateViand(viand)"></MyFood>
               </v-item>
             </v-col>
           </v-row>
@@ -26,12 +26,12 @@ export default {
   data() {
     return {
       foods: [
-        { image: require("@/assets/adobongmanok.jpg"), name: "Kari-kari" },
-        { image: require("@/assets/adobongmanok.jpg"), name: "test" },
-        { image: require("@/assets/adobongmanok.jpg"), name: "1" },
-        { image: require("@/assets/adobongmanok.jpg"), name: "2" },
-        { image: require("@/assets/adobongmanok.jpg"), name: "asd" },
-        { image: require("@/assets/adobongmanok.jpg"), name: "fgh" },
+        // { image: require("@/assets/adobongmanok.jpg"), name: "Kari-kari" },
+        // { image: require("@/assets/adobongmanok.jpg"), name: "test" },
+        // { image: require("@/assets/adobongmanok.jpg"), name: "1" },
+        // { image: require("@/assets/adobongmanok.jpg"), name: "2" },
+        // { image: require("@/assets/adobongmanok.jpg"), name: "asd" },
+        // { image: require("@/assets/adobongmanok.jpg"), name: "fgh" },
       ]
     };
   },
@@ -40,9 +40,9 @@ export default {
     // AddFood
   },
   methods: {
-    // updateViand(viand){
-    //   this.foods.push(viand)
-    // }
+    updateViand(viand){
+      this.foods.push(viand)
+    }
   }
 };
 </script>

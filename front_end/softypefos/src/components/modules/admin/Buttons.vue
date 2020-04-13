@@ -16,7 +16,7 @@
           <v-icon v-else>mdi-dots-vertical</v-icon>
         </v-btn>
       </template>
-      <AddFood/>
+      <AddFood @uploaded="updateListViand"/>
       <v-btn color="warning" fab small>
         <v-icon>mdi-pencil</v-icon>
       </v-btn>
@@ -84,9 +84,9 @@ export default {
     }
   },
   methods: {
-    // updateDashboard(item) {
-    //   this.$emit("uploaded", item);
-    // }
+    updateListViand(viand) {
+      this.$emit(viand, "uploaded");
+    }
     // logout() {
     // this.$swal.fire("You are now logged out.", " ", "success");
     // ROUTER.push("/home");
