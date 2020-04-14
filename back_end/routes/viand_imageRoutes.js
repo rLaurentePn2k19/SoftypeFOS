@@ -5,7 +5,7 @@ const adminController = require('../controller/adminController');
 const Viand = require('../model/viand');
 
 
-app.route("/addviand").post(upload.single("img"), (req, res) => {
+app.route("/addViand").post(upload.single("img"), (req, res) => {
     console.log(req.file)
     let viand = JSON.parse(req.body.viand);
     var imgUrl = `http://localhost:4000/files/`
@@ -15,18 +15,17 @@ app.route("/addviand").post(upload.single("img"), (req, res) => {
         name: viand.name,
     });
     adminController.saveViand(create_viand, res)
-
 })
 
-// app.get('/retrieveall', (req, res) => {
-//     adminController.RetrieveAllViand(res);
-//     console.log(res)
-// })
-
-app.route("/retrieveall").get(req, res => {
+app.get('/retrieveViands', (req, res) => {
     adminController.RetrieveAllViand(res);
     console.log(res)
 })
+
+// app.route("/retrieveall").get(req, res => {
+//     adminController.RetrieveAllViand(res);
+//     console.log(res)
+// })
 
 module.exports = app;
 

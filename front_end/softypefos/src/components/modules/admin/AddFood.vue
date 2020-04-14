@@ -92,7 +92,7 @@ export default {
       this.name = "";
     },
     uploadViand() {
-      if (this.name == null) {
+      if (this.name == "") {
         this.dialog = true;
         this.$swal.fire({
           title: "Please fill up the provided fields.",
@@ -109,12 +109,13 @@ export default {
         formData.append("img", this.imgs);
         formData.append("viand", JSON.stringify(_viand));
         axios
-          .post(`http://localhost:4000/admin/addviand`, formData)
+          .post(`http://localhost:4000/admin/addViand`, formData)
           .then(res => {
             setTimeout(() => (this.loading = false), 2000);
-            setTimeout(() => (this.dialog = false), 2000);
+            setTimeout(() => (this.dialog = false), 500);
+            alert("done")
             console.log(res.data, "response");
-            // this.$emit("uploaded", res.data);
+            this.$emit("uploaded-viand", res.data);
             this.name = null;
             this.imgs = null;
           })
