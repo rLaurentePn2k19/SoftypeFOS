@@ -9,7 +9,7 @@
           <v-row>
             <v-col v-for="food in foods" :key="food.name" cols="12" md="4">
               <v-item>
-                <MyFood :foodDetails="food" @uploaded="updateViand(viand)"></MyFood>
+                <MyFood :foodDetails="food" ></MyFood>
               </v-item>
             </v-col>
           </v-row>
@@ -40,9 +40,9 @@ export default {
     // AddFood
   },
   methods: {
-    updateViand(viand){
-      this.foods.push(viand)
-    }
+    // updateViand(viand){
+    //   this.foods.push(viand)
+    // }
   }
 };
 </script>

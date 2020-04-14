@@ -6,7 +6,7 @@
           <v-icon dark>mdi-plus</v-icon>
         </v-btn>
       </template>
-      <v-card>
+      <v-card :loading="loading" max-width="350px">
         <v-toolbar color="orange" dark flat>
           <v-toolbar-title>Add a viand</v-toolbar-title>
           <v-spacer/>
@@ -26,7 +26,7 @@
               <v-icon>mdi-camera</v-icon>Click to upload
             </v-btn>
             <input ref="uploader" class="d-none" type="file" accept="image/*" @change="onUpload">-->
-            <v-file-input dense v-model="imgs" multiple label="Upload Image" accept="/*image"></v-file-input>
+            <v-file-input dense v-model="imgs" label="Upload Image" accept="/*image"></v-file-input>
           </v-form>
         </v-card-text>
         <v-card-actions>
@@ -48,6 +48,7 @@ export default {
     return {
       dialog: false,
       show1: false,
+      loading: false,
       file: "",
       imgs: [],
       name: "",
@@ -59,34 +60,35 @@ export default {
     };
   },
   methods: {
-    onUpload(e) {
-      this.file = e.target.files;
-      const Toast = this.$swal.mixin({
-        toast: true,
-        position: "top-end",
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        onOpen: toast => {
-          toast.addEventListener("mouseenter", this.$swal.stopTimer);
-          toast.addEventListener("mouseleave", this.$swal.resumeTimer);
-        }
-      });
-      const emp =
-        this.name == "" || this.file == null
-          ? ((this.dialog = true),
-            this.$swal.fire("Oops..", " Please input the field.", "error"))
-          : ((this.dialog = false),
-            Toast.fire({
-              icon: "success",
-              title: `${this.name} is Successfully added.`
-            }),
-            // this.$swal.fire(`${this.viand.name} is successfully added.`, " ", "success"),
-            console.log(this.file));
-      return emp;
-    },
+    // onUpload(e) {
+    //   this.file = e.target.files;
+    //   const Toast = this.$swal.mixin({
+    //     toast: true,
+    //     position: "top-end",
+    //     showConfirmButton: false,
+    //     timer: 3000,
+    //     timerProgressBar: true,
+    //     onOpen: toast => {
+    //       toast.addEventListener("mouseenter", this.$swal.stopTimer);
+    //       toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+    //     }
+    //   });
+    //   const emp =
+    //     this.name == "" || this.file == null
+    //       ? ((this.dialog = true),
+    //         this.$swal.fire("Oops..", " Please input the field.", "error"))
+    //       : ((this.dialog = false),
+    //         Toast.fire({
+    //           icon: "success",
+    //           title: `${this.name} is Successfully added.`
+    //         }),
+    //         // this.$swal.fire(`${this.viand.name} is successfully added.`, " ", "success"),
+    //         console.log(this.file));
+    //   return emp;
+    // },
     cancel() {
       this.dialog = false;
+      this.loading = false;
       this.name = "";
     },
     uploadViand() {
@@ -111,8 +113,8 @@ export default {
           .then(res => {
             setTimeout(() => (this.loading = false), 2000);
             setTimeout(() => (this.dialog = false), 2000);
-            console.log(res.data);
-            this.$emit("uploaded", res.data);
+            console.log(res.data, "response");
+            // this.$emit("uploaded", res.data);
             this.name = null;
             this.imgs = null;
           })

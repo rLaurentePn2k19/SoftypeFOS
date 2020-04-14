@@ -1,32 +1,32 @@
 const express = require('express');
 const app = express.Router();
-const upload = require('../middlewares/multer').array('img', 6);
+const upload = require('../middlewares/multer');
 const adminController = require('../controller/adminController');
+const Viand = require('../model/viand');
 
 
-app.post('/addviand',(req, res) => {
-    console.log(req.body)
-    upload(req, res, (err) => {
-        if (err) {
-            return res.end("Error uploading file.");
-        } else {
-            var imgs = req.files
-            if (!imgs || !imgs.length) {
-                const error = new Error('Please upload a file')
-                error.httpStatusCode = 400
-                res.status(500).send(error);
-            } else {
-                adminController.saveViand(req, res)
-                console.log(res)
-            }
-        }
+app.route("/addviand").post(upload.single("img"), (req, res) => {
+    console.log(req.file)
+    let viand = JSON.parse(req.body.viand);
+    var imgUrl = `http://localhost:4000/files/`
+
+    const create_viand = new Viand({
+        image: imgUrl + req.file.filename,
+        name: viand.name,
     });
+    adminController.saveViand(create_viand, res)
+
 })
 
-app.get('/retrieveall', (req, res) => {
+// app.get('/retrieveall', (req, res) => {
+//     adminController.RetrieveAllViand(res);
+//     console.log(res)
+// })
+
+app.route("/retrieveall").get(req, res => {
     adminController.RetrieveAllViand(res);
     console.log(res)
 })
 
-
 module.exports = app;
+

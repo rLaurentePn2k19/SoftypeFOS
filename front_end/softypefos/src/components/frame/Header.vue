@@ -87,7 +87,7 @@
       <v-icon>mdi-food-variant</v-icon>
     </v-btn>
     <v-divider class="mx-4" inset vertical v-if="$route.name =='foods' || $route.name =='home' "></v-divider>
-    <Buttons v-if="$route.name =='dashboard' || $route.name =='orders'" @uploaded="updateListViand"></Buttons>
+    <Buttons v-if="$route.name =='dashboard' || $route.name =='orders'" ></Buttons>
     <AdminLogin v-else></AdminLogin>
   </v-app-bar>
 </template>
@@ -119,10 +119,7 @@ export default {
       this.hide = !this.hide;
       this.$emit("showSideNavEvent", this.hide);
     },
-    updateListViand(item) {
-      // this.viands.push(item);
-      this.$emit(item,"updateDashboard")
-    }
+    
   }
 };
 </script>
