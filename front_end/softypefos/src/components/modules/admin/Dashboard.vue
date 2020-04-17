@@ -9,7 +9,7 @@
         <v-row>
           <v-col v-for="food in foods" :key="food.name" cols="12" md="4">
             <v-item>
-              <MyFood :foodDetails="food" @uploaded-viand="updateDashboard"></MyFood>
+              <MyFood :foodDetails="food" ></MyFood>
             </v-item>
           </v-col>
         </v-row>

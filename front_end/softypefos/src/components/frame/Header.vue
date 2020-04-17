@@ -74,27 +74,24 @@
       v-on:click="home"
       target="_blank"
       text
-      v-if="$route.name =='foods' || $route.name =='home' "
+      v-if="$route.name =='viands' || $route.name =='home' "
     >
       <span class="mr-2">Home</span>
       <v-icon>mdi-home</v-icon>
     </v-btn>
-    <v-divider class="mx-4" inset vertical v-if="$route.name =='foods' || $route.name =='home' "></v-divider>
+    <v-divider class="mx-4" inset vertical v-if="$route.name =='viands' || $route.name =='home' "></v-divider>
     <v-btn
-      v-on:click="signin"
+      v-on:click="viewViands"
       target="_blank"
       text
-      v-if="$route.name =='foods' || $route.name =='home' "
+      v-if="$route.name =='viands' || $route.name =='home' "
     >
-      <span class="mr-2">Foods</span>
+      <span class="mr-2">Viands</span>
       <v-icon>mdi-food-variant</v-icon>
     </v-btn>
-    <v-divider class="mx-4" inset vertical v-if="$route.name =='foods' || $route.name =='home' "></v-divider>
-    <Buttons
-      v-if="$route.name =='dashboard' || $route.name =='orders'"
-      @uploaded-viand="updateDashboard"
-    ></Buttons>
-    <AdminLogin v-else></AdminLogin>
+    <v-divider class="mx-4" inset vertical v-if="$route.name =='viands' || $route.name =='home' "></v-divider>
+    <Buttons v-show="$route.name == 'dashboard'"></Buttons>
+    <AdminLogin v-if="$route.name =='viands' || $route.name =='home' "></AdminLogin>
   </v-app-bar>
 </template>
 
@@ -115,8 +112,8 @@ export default {
     Buttons
   },
   methods: {
-    signin() {
-      ROUTER.push("/foods");
+    viewViands() {
+      ROUTER.push("/viands");
     },
     home() {
       ROUTER.push("/home");

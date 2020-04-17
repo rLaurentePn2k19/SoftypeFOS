@@ -16,7 +16,6 @@
           <v-toolbar-title>Order</v-toolbar-title>
           <v-spacer/>
         </v-toolbar>
-        <!-- <v-card-title class="headline">Use Google's location service?</v-card-title>  -->
         <br>
         <v-card-text>
           <v-form>
@@ -30,7 +29,7 @@
                   <v-icon color="success">mdi-check</v-icon>
                 </v-list-item-icon>
                 <v-list-item-content>
-                  <v-list-item-title v-text="order.title +' : '+ order.quantity "></v-list-item-title>
+                  <v-list-item-title v-text="order.viand_name +' : '+ order.viand_qty "></v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </v-list-item-group>
@@ -71,12 +70,17 @@ export default {
       new_order: []
     };
   },
+  // computed:{
+  //   EmptyOrders(){
+  //     return 
+  //   }
+  // },
   methods: {
     order() {
       this.Orders.forEach(order => {
         let order_obj = {
-          viand_name: order.title,
-          viand_qty: order.quantity
+          viand_name: order.viand_name,
+          viand_qty: order.viand_qty
         };
         this.new_order.push(order_obj);
       });
@@ -85,9 +89,7 @@ export default {
         name: this.name,
         orders: this.new_order
       };
-
       // var order_obj = JSON.stringify(obj);
-
       console.log(obj, "obj");
 
       const food_order =
@@ -105,12 +107,14 @@ export default {
                 setTimeout(() => (this.loading = false), 2000);
                 setTimeout(() => (this.dialog = false), 500);
                 console.log(res.data, "response");
+                this.name = ""
+                this.Orders = []
+                this.$emit("done-order", true)
               })
               .catch(error => {
                 console.error("file upload failed", error);
               }),
             this.$swal.fire("Yehey!", "Successfully order.", "success"));
-      // this.orders = []
       return food_order;
     }
   }

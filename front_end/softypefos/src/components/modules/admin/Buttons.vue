@@ -16,7 +16,7 @@
           <v-icon v-else>mdi-dots-vertical</v-icon>
         </v-btn>
       </template>
-      <AddFood @uploaded-viand="updateDashboard"></AddFood>
+      <AddFood ></AddFood>
       <v-btn color="warning" fab small>
         <v-icon>mdi-pencil</v-icon>
       </v-btn>

@@ -2,9 +2,9 @@ export default {
 
     routes: [
         {
-        path: '/foods',
-        name: 'foods',
-        component: resolve => require(['@/components/modules/user/Foods.vue'], resolve),
+        path: '/viands',
+        name: 'viands',
+        component: resolve => require(['@/components/modules/user/Viands.vue'], resolve),
         meta: {
             tokenRequired: false
         }

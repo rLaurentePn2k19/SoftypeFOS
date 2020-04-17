@@ -2,15 +2,17 @@
   <v-container fluid>
     <br>
     <div class="text-center">
-      <h1 style="font-style: italic;">Orders</h1>
+      <h1 style="font-style: italic;">Orders </h1>
+      <div class="align-end"></div>
     </div>
-    <v-data-iterator :items="testList" :items-per-page.sync="length_list" hide-default-footer>
+    
+    <v-data-iterator :items="orders" :orders-per-page.sync="length_list" hide-default-footer>
       <template v-slot:default="props">
         <v-row>
           <v-col v-for="order in props.items" :key="order.id" cols="12" sm="6" md="4" lg="3">
             <v-card>
               <v-card-title class="subheading font-weight-bold">
-                {{ order.name }}
+                {{`${order.name}`}}  
                 <v-spacer></v-spacer>
                 <v-btn fab small color="success" @click="check">
                   <v-icon>mdi-check</v-icon>
@@ -40,38 +42,12 @@ import axios from "axios";
 
 export default {
   data: () => ({
-    // itemsPerPage: 0,
-    // items: [
-    //   {
-    //     name: "Rangie",
-    //     calories: 159,
-    //     fat: 6.0,
-    //     carbs: 24
-    //   },
-    //   {
-    //     name: "Kel",
-    //     calories: 237,
-    //     fat: 9.0,
-    //     carbs: 37
-    //   },
-    //   {
-    //     name: "Care",
-    //     calories: 262,
-    //     fat: 16.0,
-    //     carbs: 23
-    //   },
-    //   {
-    //     name: "Jean",
-    //     calories: 305,
-    //     fat: 3.7,
-    //     carbs: 67
-    //   }
-    // ],
-    testList: []
+    today : new Date(),
+    orders: []
   }),
   computed: {
     length_list() {
-      return this.testList.length;
+      return this.orders.length;
     }
   },
   mounted() {
@@ -79,9 +55,9 @@ export default {
       .get("http://localhost:4000/order/retrieveOrders")
       .then(res => {
         for (let i = 0; i < res.data.data.length; i++) {
-          this.testList.push(res.data.data[i]);
+          this.orders.push(res.data.data[i]);
         }
-        console.table(this.testList);
+        console.table(this.orders);
       })
       .catch(err => {
         console.log(err);
