@@ -4,14 +4,16 @@ var Schema = mongoose.Schema;
 
 var order = new Schema({
   name: { type: String, required: true },
-  viands: { type: [String], required: true }
+  viands: [
+    {
+      viand_name: { type: String, required: true },
+      viand_qty: { type: Number, required: true },
+    }
+  ]
 },
   { collection: 'order' }
 );
 
-// user.statics.getByEmail = async function(username) {
-//   return await this.findOne({"username" : username})
-// }
 
 var Order = mongoose.model('Order', order);
 

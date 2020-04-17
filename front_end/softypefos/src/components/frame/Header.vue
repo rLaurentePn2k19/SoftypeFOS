@@ -26,7 +26,10 @@
         width="40"
       />
 
-      <span style="font-style: italic; font-stretch: expanded;">Softype Food Order System</span>
+      <span
+        style="font-style: italic; font-stretch: expanded;"
+        id="brandname"
+      >Softype Food Order System</span>
 
       <!--
         <v-img
@@ -87,7 +90,10 @@
       <v-icon>mdi-food-variant</v-icon>
     </v-btn>
     <v-divider class="mx-4" inset vertical v-if="$route.name =='foods' || $route.name =='home' "></v-divider>
-    <Buttons v-if="$route.name =='dashboard' || $route.name =='orders'" @uploaded-viand="updateDashboard"></Buttons>
+    <Buttons
+      v-if="$route.name =='dashboard' || $route.name =='orders'"
+      @uploaded-viand="updateDashboard"
+    ></Buttons>
     <AdminLogin v-else></AdminLogin>
   </v-app-bar>
 </template>
@@ -122,6 +128,9 @@ export default {
     updateDashboard(viand) {
       this.$emit("uploaded-viand", viand);
     }
+  },
+  mounted() {
+    console.log(this.$vuetify.breakpoint);
   }
 };
 </script>

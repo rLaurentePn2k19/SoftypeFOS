@@ -18,5 +18,14 @@
 
 <script>
 
+export default{
+  data(){
+    return{
+    }
+  },
+  mounted() {
+    console.log(this.$vuetify.breakpoint);
+  }
+};
 
 </script>

@@ -20,13 +20,7 @@
         <br>
         <v-card-text>
           <v-form>
-            <v-text-field
-              label="Nickname"
-              name="username"
-              :prepend-icon="'mdi-account'"
-              type="text"
-              v-model="nickname"
-            />
+            <v-text-field label="Name" :prepend-icon="'mdi-account'" type="text" v-model="name"/>
           </v-form>
           <v-list flat>
             <v-subheader>Viand/s you order:</v-subheader>
@@ -61,6 +55,7 @@
 
 
 <script>
+import axios from "axios";
 export default {
   props: {
     Orders: {
@@ -69,20 +64,34 @@ export default {
   },
   data() {
     return {
+      loading: false,
       dialog: false,
-      nickname: "",
-      item: 1
-      // items: [
-      //   { text: "Adobo", quantity: "1", icon: "mdi-check" },
-      //   { text: "Lumpia", quantity: "2", icon: "mdi-check" },
-      //   { text: "Ampalaya", quantity: "3", icon: "mdi-check" }
-      // ]
+      name: "",
+      item: 1,
+      new_order: []
     };
   },
   methods: {
     order() {
+      this.Orders.forEach(order => {
+        let order_obj = {
+          viand_name: order.title,
+          viand_qty: order.quantity
+        };
+        this.new_order.push(order_obj);
+      });
+
+      const obj = {
+        name: this.name,
+        orders: this.new_order
+      };
+
+      // var order_obj = JSON.stringify(obj);
+
+      console.log(obj, "obj");
+
       const food_order =
-        this.nickname == ""
+        this.name == ""
           ? ((this.dialog = true),
             this.$swal.fire({
               icon: "error",
@@ -90,7 +99,18 @@ export default {
               text: "Please fill in the provided fields."
             }))
           : ((this.dialog = false),
+            axios
+              .post(`http://localhost:4000/order/addOrder`, obj)
+              .then(res => {
+                setTimeout(() => (this.loading = false), 2000);
+                setTimeout(() => (this.dialog = false), 500);
+                console.log(res.data, "response");
+              })
+              .catch(error => {
+                console.error("file upload failed", error);
+              }),
             this.$swal.fire("Yehey!", "Successfully order.", "success"));
+      // this.orders = []
       return food_order;
     }
   }

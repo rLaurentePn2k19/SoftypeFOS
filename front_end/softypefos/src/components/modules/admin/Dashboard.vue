@@ -47,9 +47,9 @@ export default {
   },
   methods: {
     updateDashboard(viand) {
-      console.log(viand, "viand dashboard")
+      console.log(viand, "viand dashboard");
       this.foods.push(viand);
-      console.table(this.foods)
+      console.table(this.foods);
     }
   }
 };

@@ -9,10 +9,6 @@ var viand = new Schema({
   { collection: 'viand' }
 );
 
-// user.statics.getByEmail = async function(username) {
-//   return await this.findOne({"username" : username})
-// }
-
 var Viand = mongoose.model('Viand', viand);
 
 module.exports = Viand

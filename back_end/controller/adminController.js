@@ -19,3 +19,8 @@ exports.RetrieveAllViand = (res) => {
         res.json(data)
     })
 }
+
+
+// exports.deleteViand = (viand, res) =>{
+//     viand.
+// }

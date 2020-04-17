@@ -1,21 +1,25 @@
 const Order = require('../model/order');
 
-exports.saveOrder = (req, res) => {
-    req.save((err, req) => {
-        if (err) {
-            console.log(err);
+exports.saveOrder = (req, res) =>{
+    const newOrder = new Order({
+        name : req.body.name,
+        viands: req.body.orders
+    });
+    console.log(newOrder)
+    newOrder.save((err, order) => {
+        if(err){
+            console.log(err)
             return res.status(500).send(err);
         }
-        console.log(req);
-        res.json(req);
-    });
+        res.json(order)
+    })
 }
 
-exports.RetrieveAllOrder = (res) => {
-    Order.find({}, (err, data) => {
+exports.RetrieveAllOrder = (req, res) => {
+    Order.find({}, (err, orders) => {
         if (err) {
             res.status(500).send(err);
         }
-        res.json(data)
+        res.json({data : orders})
     })
 }

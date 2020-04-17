@@ -113,7 +113,6 @@ export default {
           .then(res => {
             setTimeout(() => (this.loading = false), 2000);
             setTimeout(() => (this.dialog = false), 500);
-            alert("done")
             console.log(res.data, "response");
             this.$emit("uploaded-viand", res.data);
             this.name = null;
