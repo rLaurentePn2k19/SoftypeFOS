@@ -20,7 +20,25 @@ exports.RetrieveAllViand = (res) => {
     })
 }
 
+exports.deleteViand = (req, res) => {
+    Viand.findByIdAndDelete(req.params.id, (err, data) => {
+        if (err) {
+            res.status(500).send(err);
+        }
+        res.json(data)
+    })
+}
 
-// exports.deleteViand = (viand, res) =>{
-//     viand.
-// }
+// lacking update 
+
+exports.updateViand = (req, res) => {
+    console.log(req.body.obj, " test update")
+    // Viand.findByIdAndUpdate(req.body._id, { image: req.body.image, name: req.body.name }, (err, data) => {
+    //     if (err) {
+    //         res.status(500).send(err);
+    //     }
+    //     res.json(data)
+    // })
+}
+
+

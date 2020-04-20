@@ -2,7 +2,7 @@
   <v-row justify="center">
     <v-dialog v-model="dialog" persistent max-width="350">
       <template v-slot:activator="{ on }">
-        <v-btn fab color="indigo" class="mx-2" dark v-on="on" small>
+        <v-btn fab text class="mx-2" dark v-on="on" small>
           <v-icon dark>mdi-plus</v-icon>
         </v-btn>
       </template>
@@ -11,7 +11,6 @@
           <v-toolbar-title>Add a viand</v-toolbar-title>
           <v-spacer/>
         </v-toolbar>
-        <!-- <v-card-title class="headline">Use Google's location service?</v-card-title> -->
         <br>
         <v-card-text>
           <v-form>
@@ -22,10 +21,6 @@
               :rules="[rules.required]"
               @click:append="show1 = !show1"
             />
-            <!-- <v-btn class="file_button" @click.prevent="$refs.uploader.click()">
-              <v-icon>mdi-camera</v-icon>Click to upload
-            </v-btn>
-            <input ref="uploader" class="d-none" type="file" accept="image/*" @change="onUpload">-->
             <v-file-input dense v-model="imgs" label="Upload Image" accept="/*image"></v-file-input>
           </v-form>
         </v-card-text>
@@ -114,9 +109,11 @@ export default {
             setTimeout(() => (this.loading = false), 2000);
             setTimeout(() => (this.dialog = false), 500);
             console.log(res.data, "response");
-            this.$emit("uploaded-viand", res.data);
+            this.$swal.fire(`${this.name} is successfully added.`, " ", "success")
+            this.$bus.$emit("update-viand-view",res.data)
             this.name = null;
             this.imgs = null;
+
           })
           .catch(error => {
             console.error("file upload failed", error);

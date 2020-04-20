@@ -7,9 +7,9 @@
     <v-item-group>
       <v-container>
         <v-row>
-          <v-col v-for="food in foods" :key="food.name" cols="12" md="4">
+          <v-col v-for="viand in viands" :key="viand.id" cols="12" md="4">
             <v-item>
-              <MyFood :foodDetails="food" ></MyFood>
+              <MyViands :viandDetails="viand"></MyViands>
             </v-item>
           </v-col>
         </v-row>
@@ -19,23 +19,33 @@
 </template>
 
 <script>
-import MyFood from "@/components/modules/admin/MyFoods.vue";
+import MyViands from "@/components/modules/admin/MyViands.vue";
 import axios from "axios";
 
 export default {
   data() {
     return {
-      foods: []
+      viands: []
     };
   },
   mounted() {
+    this.$bus.$on("update-viand-view", uploaded_viand => {
+      console.log(uploaded_viand);
+      this.viands.push(uploaded_viand);
+    });
+    this.$bus.$on("viand-remove", id => {
+      this.viands = this.viands.filter(viand => {
+        if (viand._id != id) {
+          return viand;
+        }
+      });
+    });
     axios
       .get("http://localhost:4000/admin/retrieveViands")
       .then(res => {
-        this.foods = [];
-        console.log(res.data, "mounted dashboard");
+        this.viands = [];
         for (var i = 0; i < res.data.length; i++) {
-          this.foods.push(res.data[i]);
+          this.viands.push(res.data[i]);
         }
       })
       .catch(err => {
@@ -43,13 +53,11 @@ export default {
       });
   },
   components: {
-    MyFood
+    MyViands
   },
-  methods: {
-    updateDashboard(viand) {
-      console.log(viand, "viand dashboard");
-      this.foods.push(viand);
-      console.table(this.foods);
+  watch: {
+    viands() {
+      return this.viands;
     }
   }
 };

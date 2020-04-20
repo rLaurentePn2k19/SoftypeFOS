@@ -1,10 +1,10 @@
 <template>
-  <v-row justify="center">
+  <v-row>
     <v-dialog v-model="dialog" max-width="350">
       <template v-slot:activator="{ on }">
         <v-btn text v-on="on">
-          <span class="mr-2">Login</span>
-          <v-icon>mdi-account</v-icon>
+          <!-- <span class="mr-2">Login</span> -->
+          <v-icon>mdi-login</v-icon>
         </v-btn>
       </template>
       <v-card>

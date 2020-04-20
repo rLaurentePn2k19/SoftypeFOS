@@ -25,50 +25,13 @@
         transition="scale-transition"
         width="40"
       />
-
-      <span
+      <v-toolbar-title
         style="font-style: italic; font-stretch: expanded;"
-        id="brandname"
-      >Softype Food Order System</span>
-
-      <!--
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      -->
+        id="test"
+      >Softype Food Order System</v-toolbar-title>
     </div>
 
-    <v-spacer v-for="n in 10" :key="n"></v-spacer>
-    <!-- <v-spacer></v-spacer>
-    <v-spacer></v-spacer>
-    <v-spacer></v-spacer>
-    <v-spacer></v-spacer>
-    <v-spacer></v-spacer>
-    <v-spacer></v-spacer>
-    <v-spacer></v-spacer>
-    <v-spacer></v-spacer>
-    <v-spacer></v-spacer>
-    <v-spacer></v-spacer>
-    <v-spacer></v-spacer>
-    <v-spacer></v-spacer>
-    <v-spacer></v-spacer>
-    <v-spacer></v-spacer>
-    <v-spacer></v-spacer>
-    <v-spacer></v-spacer>
-    <v-spacer></v-spacer>
-    <v-spacer></v-spacer>
-    <v-spacer></v-spacer>
-    <v-spacer></v-spacer>
-    <v-spacer></v-spacer>
-    <v-spacer></v-spacer>
-    <v-spacer></v-spacer>
-    <v-spacer></v-spacer>
-    <v-spacer></v-spacer>-->
+    <v-spacer v-for="n in 40" :key="n"></v-spacer>
 
     <v-btn
       v-on:click="home"
@@ -76,28 +39,40 @@
       text
       v-if="$route.name =='viands' || $route.name =='home' "
     >
-      <span class="mr-2">Home</span>
       <v-icon>mdi-home</v-icon>
     </v-btn>
-    <v-divider class="mx-4" inset vertical v-if="$route.name =='viands' || $route.name =='home' "></v-divider>
+    <v-divider class="mx-1" inset vertical v-if="$route.name =='viands' || $route.name =='home' "></v-divider>
     <v-btn
       v-on:click="viewViands"
       target="_blank"
       text
       v-if="$route.name =='viands' || $route.name =='home' "
     >
-      <span class="mr-2">Viands</span>
       <v-icon>mdi-food-variant</v-icon>
     </v-btn>
-    <v-divider class="mx-4" inset vertical v-if="$route.name =='viands' || $route.name =='home' "></v-divider>
-    <Buttons v-show="$route.name == 'dashboard'"></Buttons>
+    <v-divider class="mx-1" inset vertical v-if="$route.name =='viands' || $route.name =='home' "></v-divider>
+    <AddViand></AddViand>
     <AdminLogin v-if="$route.name =='viands' || $route.name =='home' "></AdminLogin>
   </v-app-bar>
 </template>
 
+
+<style>
+@media only screen and (max-width: 500px) {
+  #test {
+    font-size: 13px;
+  }
+  @media screen and (max-width: 400px) {
+    #test {
+      font-size: 10px;
+    }
+  }
+}
+</style>
+
 <script>
 import ROUTER from "@/router";
-import Buttons from "@/components/modules/admin/Buttons.vue";
+import AddViand from "@/components/modules/admin/AddViand.vue";
 import AdminLogin from "@/components/modules/admin/Login.vue";
 
 export default {
@@ -109,7 +84,7 @@ export default {
   },
   components: {
     AdminLogin,
-    Buttons
+    AddViand
   },
   methods: {
     viewViands() {
@@ -121,13 +96,10 @@ export default {
     showNav() {
       this.hide = !this.hide;
       this.$emit("showSideNavEvent", this.hide);
-    },
-    updateDashboard(viand) {
-      this.$emit("uploaded-viand", viand);
     }
   },
   mounted() {
-    console.log(this.$vuetify.breakpoint);
+    console.log(this.$vuetify.breakpoint.name);
   }
 };
 </script>

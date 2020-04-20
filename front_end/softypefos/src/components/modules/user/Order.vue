@@ -70,11 +70,7 @@ export default {
       new_order: []
     };
   },
-  // computed:{
-  //   EmptyOrders(){
-  //     return 
-  //   }
-  // },
+ 
   methods: {
     order() {
       this.Orders.forEach(order => {

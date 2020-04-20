@@ -22,7 +22,11 @@ router.get('/retrieveViands', (req, res) => {
     console.log(res)
 })
 
-// router.delete("/deleteViand", (adminController.))
+router.delete("/deleteViand/:id", (adminController.deleteViand));
+
+
+router.put("/updateViand", (adminController.updateViand));
+
 
 module.exports = router;
 

@@ -52,7 +52,7 @@
             </v-item>
           </v-col>
         </v-row>
-        <Order :Orders="order_viands" @done-order="doneOrder"></Order>
+        <Order :Orders="order_viands"></Order>
       </v-container>
     </v-item-group>
   </v-lazy>
@@ -88,9 +88,6 @@ export default {
     }
   },
   methods: {
-    doneOrder(bol){
-      console.log(bol)
-    },
     changeQuantity(id) {
       this.order_viands.forEach(order => {
         if (order._id == id) {
