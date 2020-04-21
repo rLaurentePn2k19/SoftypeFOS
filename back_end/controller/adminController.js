@@ -1,4 +1,5 @@
 const Viand = require('../model/viand');
+const upload = require('../middlewares/multer');
 
 exports.saveViand = (viand, res) => {
     viand.save((err, viand) => {
@@ -32,7 +33,7 @@ exports.deleteViand = (req, res) => {
 // lacking update 
 
 exports.updateViand = (req, res) => {
-    console.log(req.body.obj, " test update")
+    console.log(req.body)
     // Viand.findByIdAndUpdate(req.body._id, { image: req.body.image, name: req.body.name }, (err, data) => {
     //     if (err) {
     //         res.status(500).send(err);

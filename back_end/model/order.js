@@ -9,7 +9,8 @@ var order = new Schema({
       viand_name: { type: String, required: true },
       viand_qty: { type: Number, required: true },
     }
-  ]
+  ],
+  date: {type: String}
 },
   { collection: 'order' }
 );

@@ -1,16 +1,16 @@
 <template>
   <v-app-bar app color="orange" dark>
     <v-app-bar-nav-icon
-      v-if="$route.name =='dashboard' || $route.name =='orders' "
+      v-if="($route.name =='dashboard' && !isSmall)|| ($route.name =='orders' && !isSmall)"
       @click="showNav"
-      v-show="!hide"
+      v-show="!hide && !isSmall"
     ></v-app-bar-nav-icon>
     <v-btn
-      v-if="$route.name =='dashboard' || $route.name =='orders' "
+      v-if="($route.name =='dashboard' && !isSmall)|| ($route.name =='orders' && !isSmall)"
       text
       fab
       small
-      v-show="hide"
+      v-show="hide && !isSmall"
       @click="showNav"
     >
       <v-icon>mdi-arrow-left-bold</v-icon>
@@ -26,13 +26,11 @@
         width="40"
       />
       <v-toolbar-title
-        style="font-style: italic; font-stretch: expanded;"
+        style="font-style: italic;"
         id="test"
       >Softype Food Order System</v-toolbar-title>
     </div>
-
     <v-spacer v-for="n in 40" :key="n"></v-spacer>
-
     <v-btn
       v-on:click="home"
       target="_blank"
@@ -52,7 +50,13 @@
     </v-btn>
     <v-divider class="mx-1" inset vertical v-if="$route.name =='viands' || $route.name =='home' "></v-divider>
     <AddViand></AddViand>
-    <AdminLogin v-if="$route.name =='viands' || $route.name =='home' "></AdminLogin>
+     <v-btn text @click="showViandForm" v-if="$route.name =='dashboard'">
+      <v-icon>mdi-plus</v-icon>
+    </v-btn>
+    <v-btn text @click="showLoginForm" v-if="$route.name =='viands' || $route.name =='home' ">
+      <v-icon>mdi-logout</v-icon>
+    </v-btn>
+    <AdminLogin></AdminLogin>
   </v-app-bar>
 </template>
 
@@ -79,14 +83,36 @@ export default {
   name: "test",
   data() {
     return {
-      hide: true
+      hide: true,
+      isSmall: false,
+      window: {
+        width: 0,
+        height: 0
+      }
     };
   },
   components: {
     AdminLogin,
     AddViand
   },
+  created() {
+    window.addEventListener("resize", this.handleResize);
+    this.handleResize();
+  },
+  destroyed() {
+    window.removeEventListener("resize", this.handleResize);
+  },
   methods: {
+    showViandForm(){
+      this.$bus.$emit("viand-form", true);
+    },
+    showLoginForm() {
+      this.$bus.$emit("login-form", true);
+    },
+    handleResize() {
+      this.window.width = window.innerWidth;
+      this.window.height = window.innerHeight;
+    },
     viewViands() {
       ROUTER.push("/viands");
     },
@@ -99,7 +125,19 @@ export default {
     }
   },
   mounted() {
-    console.log(this.$vuetify.breakpoint.name);
+    if (this.window.width < 400) {
+      this.hide = true;
+      this.isSmall = true;
+    }
+    this.$bus.$on("mobile-view", mv => {
+      console.log(mv);
+      this.isSmall = mv;
+    });
+
+    this.$bus.$on("desktop-view", dv => {
+      console.log(dv);
+      this.isSmall = !dv;
+    });
   }
 };
 </script>

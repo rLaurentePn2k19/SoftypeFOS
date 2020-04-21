@@ -12,31 +12,35 @@
         <v-row>
           <v-col cols="12">
             <v-item v-slot:default="{ active, toggle }">
-              <v-card
-                :color="active ? 'primary' : ''"
-                class="d-flex align-center"
-                dark
-                height="200"
-                @mouseenter="toggle"
-              >
-                <v-img
-                  class="white--text align-end"
-                  height="200px"
-                  :src="viandDetails.image[0]"
-                  gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
+              <v-hover v-slot:default="{ hover }" open-delay="100">
+                <v-card
+                  :elevation="hover ? 16 : 2"
+                  :color="active ? 'primary' : ''"
+                  class="d-flex align-center"
+                  dark
+                  height="200"
+                  @mouseenter="toggle"
                 >
-                  <v-scroll-y-transition>
-                    <div v-if="active" class="display-5 flex-grow-2 text-center">
-                      <EditViand :viand_to_edit="viandDetails"></EditViand>
-                      <v-divider class="mx-1" inset vertical></v-divider>
-                      <v-btn color="error" small fab @click="deleteViand(viandDetails._id)">
-                        <v-icon>mdi-delete</v-icon>
-                      </v-btn>
-                    </div>
-                  </v-scroll-y-transition>
-                  <v-card-title>{{viandDetails.name}}</v-card-title>
-                </v-img>
-              </v-card>
+                  <v-img
+                    class="white--text align-end"
+                    height="200px"
+                    :src="viandDetails.image[0]"
+                    gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
+                  >
+                    <v-scroll-y-transition>
+                      <div v-if="active" class="display-5 flex-grow-2 text-center">
+                        <EditViand :viand_to_edit="viandDetails"></EditViand>
+                        <!-- <EditViand :viand_to_edit="viandDetails"></EditViand> -->
+                        <v-divider class="mx-1" inset vertical></v-divider>
+                        <v-btn color="error" small fab @click="deleteViand(viandDetails._id)">
+                          <v-icon>mdi-delete</v-icon>
+                        </v-btn>
+                      </div>
+                    </v-scroll-y-transition>
+                    <v-card-title>{{viandDetails.name}}</v-card-title>
+                  </v-img>
+                </v-card>
+              </v-hover>
             </v-item>
           </v-col>
         </v-row>
@@ -83,8 +87,8 @@ export default {
             this.$axios
               .delete(`http://localhost:4000/admin/deleteViand/${id}`)
               .then(res => {
-                console.log(res)
-                this.$bus.$emit("viand-remove", id)
+                console.log(res);
+                this.$bus.$emit("viand-remove", id);
                 this.$swal.fire(
                   "Deleted!",
                   "The viand has been deleted.",
@@ -92,28 +96,11 @@ export default {
                 );
               })
               .catch(err => {
-                console.log(err)
+                console.log(err);
               });
           }
         });
-    },
-    editViand() {
-      const viand = {};
-      return viand;
     }
-    // ,
-    // editViand(id) {
-    //   const viand_id = id;
-    //   console.log(viand_id);
-    //   axios
-    //     .put(`http://localhost:4000/admin/updateViand`, viand_id)
-    //     .then(res => {
-    //       console.log(res.data, "response");
-    //     })
-    //     .catch(error => {
-    //       console.error("file upload failed", error);
-    //     });
-    // }
   }
 };
 </script>

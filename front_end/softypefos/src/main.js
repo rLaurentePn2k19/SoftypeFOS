@@ -16,7 +16,6 @@ new Vue({
   vuetify,
   router,
   store,
-
   render: h => h(App),
   template: '<router-view></router-view>',
 }).$mount('#app')

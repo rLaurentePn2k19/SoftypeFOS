@@ -1,18 +1,11 @@
 <template>
   <v-row>
     <v-dialog v-model="dialog" max-width="350">
-      <template v-slot:activator="{ on }">
-        <v-btn text v-on="on">
-          <!-- <span class="mr-2">Login</span> -->
-          <v-icon>mdi-login</v-icon>
-        </v-btn>
-      </template>
       <v-card>
         <v-toolbar color="orange" dark flat>
           <v-toolbar-title>Admin</v-toolbar-title>
           <v-spacer/>
         </v-toolbar>
-        <!-- <v-card-title class="headline">Use Google's location service?</v-card-title> -->
         <br>
         <v-card-text>
           <v-form>
@@ -50,6 +43,7 @@
 
 <script>
 import ROUTER from "@/router";
+// import AUTH from "@/services/auth";
 
 export default {
   data() {
@@ -64,6 +58,11 @@ export default {
         passwordMatch: () => "The password you entered don't match"
       }
     };
+  },
+  mounted(){
+    this.$bus.$on("login-form", showForm =>{
+      this.dialog = showForm
+    })
   },
   methods: {
     adminRoute() {

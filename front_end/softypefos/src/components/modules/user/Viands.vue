@@ -8,6 +8,7 @@
     transition="fade-transition"
   >
     <v-item-group multiple>
+      <h1 class="text-center" style="font-style: italic; margin-top: 2%;">Available Viands</h1>
       <v-container>
         <v-row>
           <v-col v-for="viand in viands" :key="viand.id" cols="12" md="4">
@@ -31,7 +32,7 @@
                         color="primary"
                         medium
                         @click="addViand(viand.id)"
-                      >{{viand.selected ? "Added" : "Add" }}</v-btn>
+                      >{{viand.selected ? textTrue : textFalse }}</v-btn>
                       <v-form>
                         <v-text-field
                           label="Quantity"
@@ -76,7 +77,9 @@ export default {
     return {
       order_viands: [],
       viands: [],
-      isActive: false
+      isActive: false,
+      textTrue: "Added",
+      textFalse: "Add"
     };
   },
   components: {
@@ -102,10 +105,13 @@ export default {
           this.order_viands.push(viand);
         }
       });
-      console.log(this.order_viands, " order viands")
+      console.log(this.order_viands, " order viands");
     }
   },
   mounted() {
+    this.$bus.$on("done-order", done => {
+      console.log(!done);
+    });
     axios
       .get("http://localhost:4000/admin/retrieveViands")
       .then(res => {

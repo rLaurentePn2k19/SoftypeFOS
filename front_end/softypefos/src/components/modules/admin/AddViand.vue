@@ -1,11 +1,6 @@
 <template>
   <v-row justify="center">
     <v-dialog v-model="dialog" persistent max-width="350">
-      <template v-slot:activator="{ on }">
-        <v-btn fab text class="mx-2" dark v-on="on" small>
-          <v-icon dark>mdi-plus</v-icon>
-        </v-btn>
-      </template>
       <v-card :loading="loading" max-width="350px">
         <v-toolbar color="orange" dark flat>
           <v-toolbar-title>Add a viand</v-toolbar-title>
@@ -48,39 +43,16 @@ export default {
       imgs: [],
       name: "",
       rules: {
-        required: value => !!value || "Required."
-        // min: v => v.length >= 8 || "Min 8 characters",
-        // passwordMatch: () => "The password you entered don't match"
+        required: value => !!value || "Name of viand is required."
       }
     };
   },
+  mounted(){
+    this.$bus.$on("viand-form", vf =>{
+      this.dialog = vf
+    })
+  },
   methods: {
-    // onUpload(e) {
-    //   this.file = e.target.files;
-    //   const Toast = this.$swal.mixin({
-    //     toast: true,
-    //     position: "top-end",
-    //     showConfirmButton: false,
-    //     timer: 3000,
-    //     timerProgressBar: true,
-    //     onOpen: toast => {
-    //       toast.addEventListener("mouseenter", this.$swal.stopTimer);
-    //       toast.addEventListener("mouseleave", this.$swal.resumeTimer);
-    //     }
-    //   });
-    //   const emp =
-    //     this.name == "" || this.file == null
-    //       ? ((this.dialog = true),
-    //         this.$swal.fire("Oops..", " Please input the field.", "error"))
-    //       : ((this.dialog = false),
-    //         Toast.fire({
-    //           icon: "success",
-    //           title: `${this.name} is Successfully added.`
-    //         }),
-    //         // this.$swal.fire(`${this.viand.name} is successfully added.`, " ", "success"),
-    //         console.log(this.file));
-    //   return emp;
-    // },
     cancel() {
       this.dialog = false;
       this.loading = false;
@@ -109,11 +81,14 @@ export default {
             setTimeout(() => (this.loading = false), 2000);
             setTimeout(() => (this.dialog = false), 500);
             console.log(res.data, "response");
-            this.$swal.fire(`${this.name} is successfully added.`, " ", "success")
-            this.$bus.$emit("update-viand-view",res.data)
+            this.$swal.fire(
+              `${this.name} is successfully added.`,
+              " ",
+              "success"
+            );
+            this.$bus.$emit("update-viand-view", res.data);
             this.name = null;
             this.imgs = null;
-
           })
           .catch(error => {
             console.error("file upload failed", error);

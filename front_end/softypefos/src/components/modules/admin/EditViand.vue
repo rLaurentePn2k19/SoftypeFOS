@@ -59,7 +59,7 @@ export default {
       dialog: false,
       show: false,
       loading: false,
-      imgs: "",
+      imgs: ""
     };
   },
   watch: {},
@@ -69,16 +69,22 @@ export default {
       this.loading = false;
     },
     edit() {
-      const viand_update = {
+      var viand_update = {
         _id: this.viand_to_edit._id,
         name: this.viand_to_edit.name
       };
       let formData = new FormData();
       formData.append("img", this.imgs);
+      formData.append("update_viand", JSON.stringify(viand_update));
       this.$axios
-        .put(`http://localhost:4000/admin/updateViand`, {obj: viand_update, img : formData})
+        .put(`http://localhost:4000/admin/updateViand`, formData)
         .then(res => {
           console.log(res.data);
+          this.$swal.fire(
+            "Update Succesfully",
+            " ",
+            "success"
+          );
         })
         .catch(err => {
           console.log(err);

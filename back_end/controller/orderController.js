@@ -1,13 +1,15 @@
 const Order = require('../model/order');
 
-exports.saveOrder = (req, res) =>{
+exports.saveOrder = (req, res) => {
+    const date = new Date();
     const newOrder = new Order({
-        name : req.body.name,
-        viands: req.body.orders
+        name: req.body.name,
+        viands: req.body.orders,
+        date: date
     });
     console.log(newOrder)
     newOrder.save((err, order) => {
-        if(err){
+        if (err) {
             console.log(err)
             return res.status(500).send(err);
         }
@@ -20,6 +22,6 @@ exports.RetrieveAllOrder = (req, res) => {
         if (err) {
             res.status(500).send(err);
         }
-        res.json({data : orders})
+        res.json({ data: orders })
     })
 }

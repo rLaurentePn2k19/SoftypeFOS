@@ -1,7 +1,7 @@
 <template>
   <v-row justify="center">
     <v-dialog v-model="dialog" persistent max-width="350" scrollable>
-      <template v-slot:activator="{ on }">
+      <!-- <template v-slot:activator="{ on }">
         <v-layout row wrap justify-end>
           <v-flex shrink>
             <v-btn id="orderBtn" color="success" dark v-on="on">
@@ -10,7 +10,7 @@
             </v-btn>
           </v-flex>
         </v-layout>
-      </template>
+      </template>-->
       <v-card>
         <v-toolbar color="orange" dark flat>
           <v-toolbar-title>Order</v-toolbar-title>
@@ -24,7 +24,7 @@
           <v-list flat>
             <v-subheader>Viand/s you order:</v-subheader>
             <v-list-item-group v-model="item">
-              <v-list-item v-for="(order, i) in Orders" :key="i">
+              <v-list-item v-for="(order, i) in OrderList" :key="i">
                 <v-list-item-icon>
                   <v-icon color="success">mdi-check</v-icon>
                 </v-list-item-icon>
@@ -67,10 +67,20 @@ export default {
       dialog: false,
       name: "",
       item: 1,
-      new_order: []
+      new_order: [],
+      isDone: false
     };
   },
- 
+  computed: {
+    OrderList() {
+      return this.isDone ? [] : this.Orders;
+    }
+  },
+  mounted() {
+    this.$bus.$on("order-viand", bol => {
+      this.dialog = bol;
+    });
+  },
   methods: {
     order() {
       this.Orders.forEach(order => {
@@ -103,9 +113,9 @@ export default {
                 setTimeout(() => (this.loading = false), 2000);
                 setTimeout(() => (this.dialog = false), 500);
                 console.log(res.data, "response");
-                this.name = ""
-                this.Orders = []
-                this.$emit("done-order", true)
+                this.name = "";
+                this.isDone = true;
+                this.$bus.$emit("done-order", this.isDone)
               })
               .catch(error => {
                 console.error("file upload failed", error);

@@ -2,17 +2,17 @@
   <v-container fluid>
     <br>
     <div class="text-center">
-      <h1 style="font-style: italic;">Orders </h1>
+      <h1 style="font-style: italic;">Orders</h1>
       <div class="align-end"></div>
     </div>
-    
+
     <v-data-iterator :items="orders" :orders-per-page.sync="length_list" hide-default-footer>
       <template v-slot:default="props">
         <v-row>
           <v-col v-for="order in props.items" :key="order.id" cols="12" sm="6" md="4" lg="3">
             <v-card>
               <v-card-title class="subheading font-weight-bold">
-                {{`${order.name}`}}  
+                {{`${order.name}`}}
                 <v-spacer></v-spacer>
                 <v-btn fab small color="success" @click="check">
                   <v-icon>mdi-check</v-icon>
@@ -35,15 +35,12 @@
   </v-container>
 </template>
 
-
-
 <script>
 import axios from "axios";
 
 export default {
   data: () => ({
-    today : new Date(),
-    orders: []
+    orders: [],
   }),
   computed: {
     length_list() {

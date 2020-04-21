@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <v-navigation-drawer v-model="drawer" elevation="5" permanent app id="sidebar" width="200">
+  <div >
+    <v-navigation-drawer v-model="drawer" elevation="5" permanent app :width="width">
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="title text-center">Menu</v-list-item-title>
@@ -22,14 +22,6 @@
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <!-- <v-list-item @click="logout()">
-          <v-list-item-icon>
-            <v-icon>mdi-logout</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>Logout</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>-->
       </v-list>
       <template v-slot:append>
         <div class="pa-2">
@@ -53,6 +45,10 @@ import ROUTER from "@/router";
 export default {
   data() {
     return {
+      window: {
+        width: 0,
+        height: 0
+      },
       loading: true,
       items: [
         {
@@ -70,11 +66,28 @@ export default {
       group: null
     };
   },
-
+  computed: {
+    width() {
+      if (this.window.width < 500) {
+        return "160";
+      } else {
+        return "200";
+      }
+    }
+  },
+  created() {
+    window.addEventListener("resize", this.handleResize);
+    this.handleResize();
+  },
+  destroyed() {
+    window.removeEventListener("resize", this.handleResize);
+  },
   methods: {
+    handleResize() {
+      this.window.width = window.innerWidth;
+      this.window.height = window.innerHeight;
+    },
     logout() {
-      this.loading = !this.loading;
-      this.$emit("logout",this.loading)
       this.$swal.fire("You are now logged out.", " ", "success");
       ROUTER.push("/home");
     }
