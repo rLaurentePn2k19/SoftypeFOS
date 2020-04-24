@@ -4,15 +4,19 @@
       <span>Order</span>
       <v-icon>mdi-cart</v-icon>
     </v-btn>
-    <v-btn v-if="$route.name =='dashboard' || $route.name =='orders'" @click="goDashboard">
+    <v-btn v-if="$route.name =='dashboard' || $route.name =='orders' || $route.name =='facts'" @click="goDashboard">
       <span>Dashboard</span>
       <v-icon>mdi-view-dashboard</v-icon>
     </v-btn>
-    <v-btn v-if="$route.name =='dashboard' || $route.name =='orders'" @click="goOrders">
+    <v-btn v-if="$route.name =='dashboard' || $route.name =='orders' || $route.name =='facts'" @click="goOrders">
       <span>Orders</span>
       <v-icon>mdi-history</v-icon>
     </v-btn>
-    <v-btn v-if="$route.name =='dashboard' || $route.name =='orders'" @click="goLogout">
+    <v-btn v-if="$route.name =='dashboard' || $route.name =='orders' || $route.name =='facts'" @click="goFacts">
+      <span>Facts</span>
+      <v-icon>mdi-share</v-icon>
+    </v-btn>
+    <v-btn v-if="$route.name =='dashboard' || $route.name =='orders' || $route.name =='facts'" @click="goLogout">
       <span>Logout</span>
       <v-icon>mdi-logout</v-icon>
     </v-btn>
@@ -41,6 +45,9 @@ export default {
     },
     goOrders() {
       ROUTER.push("/orders");
+    },
+    goFacts() {
+      ROUTER.push("/facts");
     }
   }
 };

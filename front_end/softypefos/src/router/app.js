@@ -34,6 +34,14 @@ export default {
         }
     },
     {
+        path: '/facts',
+        name: 'facts',
+        component: resolve => require(['@/components/modules/admin/Facts.vue'], resolve),
+        meta: {
+            tokenRequired: true
+        }
+    },
+    {
         path: '/*',
         name: '404',
         component: resolve => require(['@/components/modules/user/Error.vue'], resolve),

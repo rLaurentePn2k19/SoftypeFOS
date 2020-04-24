@@ -1,12 +1,12 @@
 <template>
   <v-app-bar app color="orange" dark>
     <v-app-bar-nav-icon
-      v-if="($route.name =='dashboard' && !isSmall)|| ($route.name =='orders' && !isSmall)"
+      v-if="($route.name =='dashboard' && !isSmall)|| ($route.name =='orders' && !isSmall) || ($route.name =='facts' && !isSmall)"
       @click="showNav"
       v-show="!hide && !isSmall"
     ></v-app-bar-nav-icon>
     <v-btn
-      v-if="($route.name =='dashboard' && !isSmall)|| ($route.name =='orders' && !isSmall)"
+      v-if="($route.name =='dashboard' && !isSmall)|| ($route.name =='orders' && !isSmall) || ($route.name =='facts' && !isSmall)"
       text
       fab
       small
@@ -18,23 +18,20 @@
 
     <div class="d-flex align-center">
       <v-img
-        alt="Vuetify Logo"
         class="shrink mr-2"
         contain
         :src="require('@/assets/logo2.png')"
         transition="scale-transition"
         width="40"
       />
-      <v-toolbar-title
-        style="font-style: italic;"
-        id="test"
-      >Softype Food Order System</v-toolbar-title>
+      <v-toolbar-title style="font-style: italic;" id="test">Softype Food Order System</v-toolbar-title>
     </div>
     <v-spacer v-for="n in 40" :key="n"></v-spacer>
     <v-btn
       v-on:click="home"
       target="_blank"
       text
+      small
       v-if="$route.name =='viands' || $route.name =='home' "
     >
       <v-icon>mdi-home</v-icon>
@@ -44,16 +41,23 @@
       v-on:click="viewViands"
       target="_blank"
       text
+      small
       v-if="$route.name =='viands' || $route.name =='home' "
     >
       <v-icon>mdi-food-variant</v-icon>
     </v-btn>
     <v-divider class="mx-1" inset vertical v-if="$route.name =='viands' || $route.name =='home' "></v-divider>
     <AddViand></AddViand>
-     <v-btn text @click="showViandForm" v-if="$route.name =='dashboard'">
+    <v-btn
+      text
+      fab
+      small
+      @click="showViandForm"
+      v-if="$route.name =='dashboard' ||$route.name =='facts' "
+    >
       <v-icon>mdi-plus</v-icon>
     </v-btn>
-    <v-btn text @click="showLoginForm" v-if="$route.name =='viands' || $route.name =='home' ">
+    <v-btn text small @click="showLoginForm" v-if="$route.name =='viands' || $route.name =='home' ">
       <v-icon>mdi-logout</v-icon>
     </v-btn>
     <AdminLogin></AdminLogin>
@@ -103,7 +107,7 @@ export default {
     window.removeEventListener("resize", this.handleResize);
   },
   methods: {
-    showViandForm(){
+    showViandForm() {
       this.$bus.$emit("viand-form", true);
     },
     showLoginForm() {

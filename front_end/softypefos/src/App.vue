@@ -1,8 +1,8 @@
 <template>
-  <v-app>
+  <v-app id="app">
     <Header v-on:showSideNavEvent="showSideNav"></Header>
     <Sidebar
-      v-if="(!width && $route.name =='dashboard' && isNav )|| ( !width && $route.name =='orders' && isNav)"
+      v-if="(!width && $route.name =='dashboard' && isNav )|| ( !width && $route.name =='orders' && isNav) || ( !width && $route.name =='facts' && isNav)"
     ></Sidebar>
     <!-- <Sidebar v-if="$route.name =='dashboard' && isNav || $route.name =='orders' && isNav" ></Sidebar> -->
     <v-content>
@@ -13,6 +13,10 @@
 </template>
 
 <style>
+#app{
+  margin-bottom: 5%;
+}
+
 </style>
 
 <script>
@@ -37,7 +41,7 @@ export default {
     Header,
     Body,
     Sidebar,
-    BotNav
+    BotNav,
   },
   computed: {
     isNav() {

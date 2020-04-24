@@ -60,7 +60,12 @@ export default {
           title: "Orders",
           icon: "mdi-history",
           link: "/orders"
-        }
+        },
+        {
+          title: "Facts",
+          icon: "mdi-share",
+          link: "/facts"
+        },
       ],
       drawer: false,
       group: null

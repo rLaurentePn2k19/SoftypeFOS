@@ -13,8 +13,8 @@ app.use('/files', express.static(path.join(__dirname, 'photos')))
 
 require('./setup/mongo');
 
-const order = require('./routes/order_routes'); 
-const admin = require('./routes/viand_Routes');
+const order = require('./routes/user_routes'); 
+const admin = require('./routes/admin_routes');
 app.use('/order', order);
 app.use('/admin', admin);
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
