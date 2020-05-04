@@ -4,29 +4,42 @@
       <span>Order</span>
       <v-icon>mdi-cart</v-icon>
     </v-btn>
-    <v-btn v-if="$route.name =='dashboard' || $route.name =='orders' || $route.name =='facts'" @click="goDashboard">
+    <v-btn
+      v-if="$route.name =='dashboard' || $route.name =='orders' || $route.name =='facts'"
+      @click="goDashboard"
+    >
       <span>Dashboard</span>
-      <v-icon>mdi-view-dashboard</v-icon>
+      <v-icon>mdi-food</v-icon>
     </v-btn>
-    <v-btn v-if="$route.name =='dashboard' || $route.name =='orders' || $route.name =='facts'" @click="goOrders">
+    <v-btn
+      v-if="$route.name =='dashboard' || $route.name =='orders' || $route.name =='facts'"
+      @click="goOrders"
+    >
       <span>Orders</span>
-      <v-icon>mdi-history</v-icon>
+      <v-icon>mdi-dropbox</v-icon>
     </v-btn>
-    <v-btn v-if="$route.name =='dashboard' || $route.name =='orders' || $route.name =='facts'" @click="goFacts">
+    <v-btn
+      v-if="$route.name =='dashboard' || $route.name =='orders' || $route.name =='facts'"
+      @click="goFacts"
+    >
       <span>Facts</span>
       <v-icon>mdi-share</v-icon>
     </v-btn>
-    <v-btn v-if="$route.name =='dashboard' || $route.name =='orders' || $route.name =='facts'" @click="goLogout">
+    <v-btn
+      v-if="$route.name =='dashboard' || $route.name =='orders' || $route.name =='facts'"
+      @click="goLogout"
+    >
       <span>Logout</span>
       <v-icon>mdi-logout</v-icon>
     </v-btn>
   </v-bottom-navigation>
-</template>
-
+</template> 
 <script>
 import ROUTER from "@/router";
+import AUTH from "@/services/auth";
 
 export default {
+  name: "Bottom-Nav",
   data() {
     return {
       activeBtn: 1
@@ -36,8 +49,24 @@ export default {
     showOrderList() {
       this.$bus.$emit("order-viand", true);
     },
-    goLogout() {
-      this.$swal.fire("You are now logged out.", " ", "success");
+    goLogout(e) {
+      e.preventDefault();
+      const Toast = this.$swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        onOpen: toast => {
+          toast.addEventListener("mouseenter", this.$swal.stopTimer);
+          toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+        }
+      });
+      Toast.fire({
+        icon: "success",
+        title: "Admin! Signed out successfully"
+      });
+      AUTH.logout();
       ROUTER.push("/home");
     },
     goDashboard() {

@@ -1,14 +1,12 @@
-// import store from '../store.js'
 
 let beforeEnter = (to, from, next) => {
-    if(to.meta.tokenRequired === true){
-        // if(store.getters.isLoggedIn){
-        //     next()
-        // }else{
-        //     next({ path: '/login'})
-        // }
-        next()
-    }else{
+    if (to.meta.tokenRequired === true) {
+        if (localStorage.getItem("admin") == "Softype100") {
+            next()
+        } else {
+            next({ path: '/home' })
+        }
+    } else {
         next()
     }
 }
@@ -25,7 +23,7 @@ let routes = [
         path: '/',
         name: 'home',
         component: resolve => require(['@/components/modules/user/Homepage.vue'], resolve),
-            beforeEnter: beforeEnter
+        beforeEnter: beforeEnter
     }
 ]
 

@@ -41,6 +41,7 @@
 </style>
 <script>
 import ROUTER from "@/router";
+import AUTH from "@/services/auth";
 
 export default {
   data() {
@@ -52,13 +53,13 @@ export default {
       loading: true,
       items: [
         {
-          title: "Dashboard",
-          icon: "mdi-chart-bubble",
+          title: "Viands",
+          icon: "mdi-food",
           link: "/dashboard"
         },
         {
           title: "Orders",
-          icon: "mdi-history",
+          icon: "mdi-dropbox",
           link: "/orders"
         },
         {
@@ -73,7 +74,7 @@ export default {
   },
   computed: {
     width() {
-      if (this.window.width < 500) {
+      if (this.window.width < 600) {
         return "160";
       } else {
         return "200";
@@ -92,8 +93,24 @@ export default {
       this.window.width = window.innerWidth;
       this.window.height = window.innerHeight;
     },
-    logout() {
-      this.$swal.fire("You are now logged out.", " ", "success");
+    logout(e) {
+      e.preventDefault();
+      const Toast = this.$swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          onOpen: toast => {
+            toast.addEventListener("mouseenter", this.$swal.stopTimer);
+            toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+          }
+        });
+        Toast.fire({
+          icon: "success",
+          title: "Admin! Signed out successfully"
+        });
+      AUTH.logout()
       ROUTER.push("/home");
     }
   }

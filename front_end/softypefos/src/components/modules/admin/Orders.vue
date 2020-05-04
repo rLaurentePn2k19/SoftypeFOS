@@ -39,8 +39,9 @@
 import axios from "axios";
 
 export default {
+  name: "List-Orders",
   data: () => ({
-    orders: [],
+    orders: []
   }),
   computed: {
     length_list() {
@@ -48,11 +49,22 @@ export default {
     }
   },
   mounted() {
+    // var currentDate = new Date();
+    // console.log(currentDate, " tes 0");
+
+    const currentDateWithFormat = new Date()
+      .toJSON()
+      .slice(0, 10)
+      .replace(/-/g, "/");
+
     axios
       .get("http://localhost:4000/order/retrieveOrders")
       .then(res => {
+        console.log(res.data, "data orders from be")
         for (let i = 0; i < res.data.data.length; i++) {
-          this.orders.push(res.data.data[i]);
+          if (res.data.data[i].date == currentDateWithFormat) {
+            this.orders.push(res.data.data[i]);
+          }
         }
         console.table(this.orders);
       })

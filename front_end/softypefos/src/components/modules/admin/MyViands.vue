@@ -2,7 +2,7 @@
   <v-lazy
     v-model="isActive"
     :options="{
-          threshold: .5
+          threshold: 1
         }"
     min-height="200"
     transition="fade-transition"
@@ -67,6 +67,11 @@ export default {
     viandDetails: {
       type: Object
     }
+  },
+  mounted(){
+     this.$bus.$on("viands", viands => {
+      console.log(viands);
+    });
   },
   methods: {
     deleteViand(id) {

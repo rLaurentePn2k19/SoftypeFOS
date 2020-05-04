@@ -1,11 +1,16 @@
 const Order = require('../model/order');
 
 exports.saveOrder = (req, res) => {
-    const date = new Date();
+    
+    const date = new Date()
+      .toJSON()
+      .slice(0, 10)
+      .replace(/-/g, "/");
+
     const newOrder = new Order({
         name: req.body.name,
         viands: req.body.orders,
-        date: date
+        date: date,
     });
     console.log(newOrder)
     newOrder.save((err, order) => {

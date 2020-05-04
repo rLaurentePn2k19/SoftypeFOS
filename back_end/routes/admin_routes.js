@@ -34,7 +34,7 @@ router.route("/updateViand").put(upload.single("img"), (req, res) => {
 
 router.post("/addFact", adminController.postFact);
 
-router.put("/editFact", adminController.updateFact);
+router.put("/updateFact", adminController.updateFact);
 
 router.delete("/deleteFact/:id", adminController.deleteFact);
 

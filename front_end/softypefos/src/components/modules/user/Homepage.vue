@@ -2,7 +2,7 @@
   <div>
     <parallax/>
     <dateTrivia/>
-    <aboutMe/>
+    <!-- <aboutMe/> -->
   </div>
 </template>
 
@@ -14,7 +14,7 @@
 <script>
 import parallax from "@/components/modules/user/core-view/Parallax.vue"
 import dateTrivia from "@/components/modules/user/core-view/Date_trivia.vue"
-import aboutMe from "@/components/modules/user/core-view/About_me.vue"
+// import aboutMe from "@/components/modules/user/core-view/About_me.vue"
 
 export default {
   data() {
@@ -23,7 +23,7 @@ export default {
   components: {
     parallax,
     dateTrivia,
-    aboutMe
+    // aboutMe
   }
 };
 </script>

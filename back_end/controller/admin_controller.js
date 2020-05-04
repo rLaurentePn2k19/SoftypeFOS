@@ -67,7 +67,13 @@ exports.getFact = (req, res) => {
 }
 
 exports.updateFact = (req, res) => {
-    console.log(req.body)
+    Fact.findByIdAndUpdate(req.body._id, req.body, {new:true},(err, data) => {
+        if (err) {
+            res.status(500).send(err);
+        }
+        console.log(data)
+        res.json(data)
+    })
 }
 
 exports.deleteFact = (req, res) => {

@@ -13,10 +13,9 @@
 </template>
 
 <style>
-#app{
+#app {
   margin-bottom: 5%;
 }
-
 </style>
 
 <script>
@@ -41,14 +40,14 @@ export default {
     Header,
     Body,
     Sidebar,
-    BotNav,
+    BotNav
   },
   computed: {
     isNav() {
       return this.show;
     },
     width() {
-      if (this.window.width < 420) {
+      if (this.window.width < 600) {
         this.$bus.$emit("mobile-view", true);
         return true;
       } else {
@@ -72,6 +71,9 @@ export default {
     showSideNav(e) {
       this.show = e;
     }
+  },
+  mounted() {
+    this.$bus.$emit("viands", this.$store.getters.getViands);
   }
 };
 </script>

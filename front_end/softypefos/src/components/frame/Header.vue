@@ -66,7 +66,7 @@
 
 
 <style>
-@media only screen and (max-width: 500px) {
+@media only screen and (max-width: 600px) {
   #test {
     font-size: 13px;
   }
@@ -84,7 +84,7 @@ import AddViand from "@/components/modules/admin/AddViand.vue";
 import AdminLogin from "@/components/modules/admin/Login.vue";
 
 export default {
-  name: "test",
+  name: "Header",
   data() {
     return {
       hide: true,
@@ -129,7 +129,7 @@ export default {
     }
   },
   mounted() {
-    if (this.window.width < 400) {
+    if (this.window.width < 600) {
       this.hide = true;
       this.isSmall = true;
     }

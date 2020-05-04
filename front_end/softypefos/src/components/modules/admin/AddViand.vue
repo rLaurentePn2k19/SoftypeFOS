@@ -61,10 +61,10 @@
 
 
 <script>
-import axios from "axios";
 import _FuncFact from "./services/helper";
 
 export default {
+  name: "Viand-Fact-Form",
   data() {
     return {
       dialog: false,
@@ -83,7 +83,7 @@ export default {
         detail: "",
         rules: {
           required: value => !!value || "This field is required.",
-          min: value => value.length >= 50 || "Atleast one sentence"
+          min: value => value >= 50 || "Atleast one sentence"
         }
       }
     };
@@ -113,9 +113,12 @@ export default {
           .then(res => {
             setTimeout(() => (this.loading = false), 2000);
             console.log(res.data, "response");
-            this.$swal.fire("Successfully added.", " ", "success");
             setTimeout(() => (this.dialog = false), 2000);
-            this.$bus.$emit("new-fact", res.data);
+            setTimeout(() => this.$bus.$emit("new-fact", res.data), 2500);
+            setTimeout(
+              () => this.$swal.fire("Successfully added.", " ", "success"),
+              2600
+            );
           })
           .catch(err => {
             console.log(err);
@@ -125,12 +128,14 @@ export default {
     cancel() {
       this.dialog = false;
       this.loading = false;
-      this.viand.name = "";
-      this.viand.imgs = [];
-      this.facts.title = "";
-      this.facts.detail = "";
+      if (this.$route.name == "facts") {
+        this.$refs.fact_form.reset();
+      } else if (this.$route.name == "dashboard") {
+        this.$refs.viand_form.reset();
+      }
     },
     uploadViand() {
+      console.log(this.viand.imgs.name, " image file")
       if (this.viand.name == "" || this.viand.imgs.name == null) {
         this.dialog = false;
         this.$swal.fire({
@@ -139,6 +144,7 @@ export default {
           padding: "3em",
           backdrop: `rgba(255,0,0,0.4)`
         });
+        this.$refs.viand_form.reset();
       } else {
         this.loading = true;
         var _viand = {
@@ -147,23 +153,25 @@ export default {
         let formData = new FormData();
         formData.append("img", this.viand.imgs);
         formData.append("viand", JSON.stringify(_viand));
-        axios
-          .post(`http://localhost:4000/admin/addViand`, formData)
+        this.$store
+          .dispatch("AddViand", formData)
           .then(res => {
+            console.log(res, " response from store");
             setTimeout(() => (this.loading = false), 2000);
-            setTimeout(() => (this.dialog = false), 2000);
-            console.log(res.data, "response");
-            this.$swal.fire(
-              `${this.viand.name} is successfully added.`,
-              " ",
-              "success"
+            setTimeout(() => (this.dialog = false), 1000);
+            setTimeout(
+              () =>
+                this.$swal.fire(
+                  `${res.name} is successfully added.`,
+                  " ",
+                  "success"
+                ),
+              1000
             );
-            this.$bus.$emit("update-viand-view", res.data);
-            this.viand.name = null;
-            this.viand.imgs = null;
+            this.$refs.viand_form.reset();
           })
-          .catch(error => {
-            console.error("file upload failed", error);
+          .catch(err => {
+            console.log(err);
           });
       }
     }

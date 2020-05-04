@@ -4,7 +4,7 @@
     <div class="text-center">
       <h1 style="font-style: italic;">Viands</h1>
     </div>
-    <v-item-group>
+    <v-item-group v-if="progress">
       <v-container>
         <v-row>
           <v-col v-for="viand in viands" :key="viand.id" cols="12" md="4">
@@ -15,17 +15,21 @@
         </v-row>
       </v-container>
     </v-item-group>
+    <Progress v-else/>
   </v-app>
+  
 </template>
 
 <script>
 import MyViands from "@/components/modules/admin/MyViands.vue";
 import axios from "axios";
+import Progress from "@/components/frame/Progress.vue";
 
 export default {
   data() {
     return {
-      viands: []
+      viands: [],
+      progress: false
     };
   },
   mounted() {
@@ -43,17 +47,21 @@ export default {
     axios
       .get("http://localhost:4000/admin/retrieveViands")
       .then(res => {
-        this.viands = [];
+        setTimeout(() => {
+          // this.viands = [];
+          this.progress = true;
+        }, 1500);
         for (var i = 0; i < res.data.length; i++) {
-          this.viands.push(res.data[i]);
-        }
+            this.viands.push(res.data[i]);
+          }
       })
       .catch(err => {
         console.log(err);
       });
   },
   components: {
-    MyViands
+    MyViands,
+    Progress
   },
   watch: {
     viands() {

@@ -1,18 +1,23 @@
-import ROUTER from 'router'
 
 export default {
-    user: false,
+    user: null,
     setUser(user) {
-        this.user = !this.user
+        this.user = user
     },
     getUser(user) {
         return user
     },
+    login(username, password) {
+        if (username == "admin" && password == "Softype100") {
+            localStorage.setItem("Admin", username)
+            return true;
+        } else {
+            return false;
+        }
+    },
+
     logout() {
-        alert("You are now logged out.")
-        this.user = false
-        // localStorage.clear("Email");
-        // localStorage.clear("Password");
-        // ROUTER.push('/login')
+        localStorage.clear();
+        this.user = null
     }
 }

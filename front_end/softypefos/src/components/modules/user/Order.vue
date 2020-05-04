@@ -1,16 +1,6 @@
 <template>
   <v-row justify="center">
     <v-dialog v-model="dialog" persistent max-width="350" scrollable>
-      <!-- <template v-slot:activator="{ on }">
-        <v-layout row wrap justify-end>
-          <v-flex shrink>
-            <v-btn id="orderBtn" color="success" dark v-on="on">
-              Order
-              <v-icon>mdi-cart-outline</v-icon>
-            </v-btn>
-          </v-flex>
-        </v-layout>
-      </template>-->
       <v-card>
         <v-toolbar color="orange" dark flat>
           <v-toolbar-title>Order</v-toolbar-title>
@@ -19,14 +9,22 @@
         <br>
         <v-card-text>
           <v-form>
-            <v-text-field label="Name" :prepend-icon="'mdi-account'" type="text" v-model="name"/>
+            <v-text-field
+              label="Name"
+              :prepend-icon="'mdi-account'"
+              type="text"
+              v-model="name"
+              v-on:keyup.enter="order"
+            />
           </v-form>
           <v-list flat>
             <v-subheader>Viand/s you order:</v-subheader>
             <v-list-item-group v-model="item">
-              <v-list-item v-for="(order, i) in OrderList" :key="i">
+              <v-list-item v-for="(order, i) in OrderList" :key="i.id">
                 <v-list-item-icon>
-                  <v-icon color="success">mdi-check</v-icon>
+                  <v-btn fab small color="error" text @click="removeViand(order.id)">
+                    <v-icon>mdi-delete</v-icon>
+                  </v-btn>
                 </v-list-item-icon>
                 <v-list-item-content>
                   <v-list-item-title v-text="order.viand_name +' : '+ order.viand_qty "></v-list-item-title>
@@ -37,8 +35,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="error" @click="dialog = false">Cancel</v-btn>
-          <v-btn color="primary" @click="order">Done</v-btn>
+          <v-btn color="error" @click="cancelOrder">Cancel</v-btn>
+          <v-btn color="primary" @click="sendOrder">Done</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -55,7 +53,9 @@
 
 <script>
 import axios from "axios";
+
 export default {
+  name: "Order-Form",
   props: {
     Orders: {
       type: Array
@@ -73,16 +73,40 @@ export default {
   },
   computed: {
     OrderList() {
+      // it will return the list of order or empty list base on the event sent
       return this.isDone ? [] : this.Orders;
     }
   },
   mounted() {
+    
     this.$bus.$on("order-viand", bol => {
-      this.dialog = bol;
+      if (this.Orders.length) {
+        this.dialog = bol;
+      } else {
+        this.$swal.fire({
+          icon: "warning",
+          title: "Oops...",
+          text: "You should choose viand/s first."
+        });
+      }
     });
   },
   methods: {
-    order() {
+    cancelOrder(){
+      this.dialog = false
+      this.$bus.$emit("cancel-order", true)
+    },
+    removeViand(id) {
+      // remove selected viand from the order list
+      this.OrderList.forEach(viand => {
+        if (id == viand.id) {
+          this.OrderList.splice(viand, 1);
+          console.log("removed");
+        }
+      });
+    },
+    sendOrder() {
+      // a method for sending the order to the back end
       this.Orders.forEach(order => {
         let order_obj = {
           viand_name: order.viand_name,
@@ -90,38 +114,37 @@ export default {
         };
         this.new_order.push(order_obj);
       });
-
-      const obj = {
+      console.log(this.new_order, "new order");
+      const viand_order_obj = {
         name: this.name,
         orders: this.new_order
       };
-      // var order_obj = JSON.stringify(obj);
-      console.log(obj, "obj");
 
-      const food_order =
-        this.name == ""
-          ? ((this.dialog = true),
-            this.$swal.fire({
-              icon: "error",
-              title: "Oops...",
-              text: "Please fill in the provided fields."
-            }))
-          : ((this.dialog = false),
-            axios
-              .post(`http://localhost:4000/order/addOrder`, obj)
-              .then(res => {
-                setTimeout(() => (this.loading = false), 2000);
-                setTimeout(() => (this.dialog = false), 500);
-                console.log(res.data, "response");
-                this.name = "";
-                this.isDone = true;
-                this.$bus.$emit("done-order", this.isDone)
-              })
-              .catch(error => {
-                console.error("file upload failed", error);
-              }),
-            this.$swal.fire("Yehey!", "Successfully order.", "success"));
-      return food_order;
+      console.log(viand_order_obj, " object to back-end");
+
+      if (this.name == "") {
+        // if there is no name provided
+        this.$swal.fire({
+          icon: "warning",
+          title: "Hey!",
+          text: "Please indicate you nickname/name."
+        });
+      } else {
+        axios
+          .post(`http://localhost:4000/order/addOrder`, viand_order_obj) // sending the object which is the order to the back end
+          .then(res => {
+            setTimeout(() => (this.loading = false), 2000);
+            setTimeout(() => (this.dialog = false), 500);
+            console.log(res.data, "response");
+            this.isDone = true;
+            this.name = "";
+            this.$bus.$emit("done-order", this.isDone); // an event if done ordering
+          })
+          .catch(error => {
+            console.error("error order", error);
+          }),
+          this.$swal.fire("Yehey!", "Successfully order.", "success");
+      }
     }
   }
 };

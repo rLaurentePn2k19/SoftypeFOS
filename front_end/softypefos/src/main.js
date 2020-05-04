@@ -3,14 +3,14 @@ import App from './App.vue'
 import vuetify from './plugins/vuetify';
 import router from './router';
 import VueSweetalert2 from 'vue-sweetalert2'
-import store from './store'
 import bus from './bus'
-import axios from 'axios'
+// import axios from 'axios'
+import store from './store'
 
 Vue.use(VueSweetalert2);
 Vue.config.productionTip = false
 Vue.prototype.$bus = bus
-Vue.prototype.$axios = axios
+// Vue.prototype.$axios = axios
 
 new Vue({
   vuetify,
