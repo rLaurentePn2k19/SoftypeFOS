@@ -36,7 +36,6 @@
 </template> 
 <script>
 import ROUTER from "@/router";
-import AUTH from "@/services/auth";
 
 export default {
   name: "Bottom-Nav",
@@ -51,11 +50,12 @@ export default {
     },
     goLogout(e) {
       e.preventDefault();
+      this.$store.dispatch("Logout");
       const Toast = this.$swal.mixin({
         toast: true,
         position: "top-end",
         showConfirmButton: false,
-        timer: 3000,
+        timer: 2000,
         timerProgressBar: true,
         onOpen: toast => {
           toast.addEventListener("mouseenter", this.$swal.stopTimer);
@@ -63,11 +63,9 @@ export default {
         }
       });
       Toast.fire({
-        icon: "success",
-        title: "Admin! Signed out successfully"
+        icon: "warning",
+        title: "Admin! You're logging out."
       });
-      AUTH.logout();
-      ROUTER.push("/home");
     },
     goDashboard() {
       ROUTER.push("/dashboard");

@@ -5,24 +5,32 @@ import ROUTER from "@/router"
 
 Vue.use(Vuex);
 
+// add viand from the admin dashboard needs to fix
+// update view in dashboard 
+
 export default new Vuex.Store({
     state: {
         viands_To_Order: [],
         viands_To_Display: [],
-        user: false,
+        user: false
     },
     getters: {
-        getViands(state) {
+        getViands: state => {
             return state.viands_To_Display
-        }
+        },
+        getOrders: state => {
+            return state.viands_To_Order
+        },
     },
     mutations: {
-        setViands_To_Display(state, viands) {
+        setViands(state, viands) {
             state.viands_To_Display = viands
+        },
+        setOrders(state, order) {
+            state.viands_To_Order.push(order)
         },
         addViand(state, viand) {
             state.viands_To_Display.push(viand)
-            console.log(state.viands_To_Display, " viands to display @store")
         },
         deleteViand(state, viand_id) {
             state.viands_To_Display = state.viands_To_Display.filter(viand => {
@@ -34,27 +42,30 @@ export default new Vuex.Store({
         setUser(state, user) {
             state.user = user
         },
-        logout(state) {
-            state.user = false
+        logout(state, user) {
+            state.user = !user
         }
     },
     actions: {
-        GetViands({ commit }) {
-            http.get("http://localhost:4000/admin/retrieveViands").then(res => {
-                const temp_viand = []
-                res.data.forEach(data => {
-                    const viand = {
-                        id: data._id,
-                        selected: false,
-                        viand_qty: 1,
-                        viand_image: data.image,
-                        viand_name: data.name
-                    };
-                    temp_viand.push(viand);
-                });
-                commit("setViands_To_Display", temp_viand)
-            }).catch(err => {
-                console.log(err)
+        GetUploadedViands({ commit }) {
+            return new Promise((resolve, reject) => {
+                http.get("http://localhost:4000/admin/retrieveViands").then(res => {
+                    const temp_viand = []
+                    res.data.forEach(data => {
+                        const viand = {
+                            id: data._id,
+                            selected: false,
+                            viand_qty: 1,
+                            viand_image: data.image,
+                            viand_name: data.name
+                        };
+                        temp_viand.push(viand);
+                    });
+                    commit("setViands", temp_viand)
+                    resolve(temp_viand)
+                }).catch(err => {
+                    reject(err)
+                })
             })
         },
         AddViand({ commit }, viand) {
@@ -89,6 +100,11 @@ export default new Vuex.Store({
                     reject(err)
                 })
             })
+        },
+        Logout({ commit }) {
+            commit("logout", true)
+            localStorage.clear()
+            setTimeout(() => (ROUTER.push("/home")), 2000);
         }
     }
 })

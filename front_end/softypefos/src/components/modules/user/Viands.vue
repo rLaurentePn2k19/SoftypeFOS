@@ -11,7 +11,7 @@
       <h1 class="text-center" style="font-style: italic; margin-top: 2%;">Available Viands</h1>
       <v-container>
         <v-row>
-          <v-col v-for="viand in Viands" :key="viand.id" cols="12" md="4">
+          <v-col v-for="viand in viands_To_Display" :key="viand.id" cols="12" md="4">
             <v-item v-slot:default="{ active, toggle }">
               <v-card
                 :color="active ? 'primary' : ''"
@@ -31,7 +31,7 @@
                       <v-btn
                         color="primary"
                         medium
-                        @click="addViand(viand.id)"
+                        @click="addToCart(viand.id)"
                       >{{viand.selected ? added : add }}</v-btn>
                       <v-form>
                         <v-text-field
@@ -53,7 +53,7 @@
             </v-item>
           </v-col>
         </v-row>
-        <Order :Orders="viandsToOrder"></Order>
+        <Order :Orders="viands_To_Order"></Order>
       </v-container>
     </v-item-group>
   </v-lazy>
@@ -69,8 +69,8 @@
 </style>
 
 <script>
-// import axios from "axios";
 import Order from "@/components/modules/user/Order.vue";
+import { mapState } from "vuex";
 
 export default {
   data() {
@@ -86,35 +86,43 @@ export default {
     Order
   },
   computed: {
-    Viands(){
-      return this.$store.getters.getViands
-    }
+    ...mapState(["viands_To_Display", "viands_To_Order"])
   },
   mounted() {
-     this.$bus.$on("viands", viands => {
-      console.log(viands);
-    });
-    this.$bus.$on("cancel-order", cancel => {
-      console.log(cancel);
-      this.viandsToOrder = [];
-    });
-    this.$bus.$on("done-order", done => {
-      this.viandsToOrder = [];
-      for (let i = 0; i < this.viands.length; i++) {
-        this.viands[i].selected = !done;
-      }
-    });
+    this.$store
+      .dispatch("GetUploadedViands")
+      .then(res => {
+        console.log(res)
+        this.$store.commit("setViands", res);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    console.log(this.viands_To_Display);
+    // this.$bus.$on("viands", viands => {
+    //   console.log(viands);
+    // });
+    // this.$bus.$on("cancel-order", cancel => {
+    //   console.log(cancel);
+    //   this.viandsToOrder = [];
+    // });
+    // this.$bus.$on("done-order", done => {
+    //   this.viandsToOrder = [];
+    //   for (let i = 0; i < this.viands.length; i++) {
+    //     this.viands[i].selected = !done;
+    //   }
+    // });
   },
   methods: {
     changeQuantity(id) {
-      this.viandsToOrder.forEach(order => {
+      this.viands_To_Order.forEach(order => {
         if (order._id == id) {
           order.quantity = order.qty;
         }
       });
     },
-    addViand(id) {
-      this.viands.filter(viand => {
+    addToCart(id) {
+      this.viands_To_Display.filter(viand => {
         if (viand.id == id) {
           if (viand.selected == true) {
             this.$swal.fire({
@@ -122,12 +130,13 @@ export default {
               title: `${viand.viand_name} is already added.`
             });
           } else {
-            this.viandsToOrder.push(viand);
+            // this.viandsToOrder.push(viand);
+            this.$store.commit("setOrders",viand)
             viand.selected = true;
           }
         }
       });
-      console.log(this.viandsToOrder, " order viands");
+      console.log(this.viands_To_Order, " order viands");
     }
   }
 };

@@ -22,7 +22,7 @@ export default {
         name: 'dashboard',
         component: resolve => require(['@/components/modules/admin/Dashboard.vue'], resolve),
         meta: {
-            tokenRequired: true
+            tokenRequired: false
         }
     },
     {
@@ -30,7 +30,7 @@ export default {
         name: 'orders',
         component: resolve => require(['@/components/modules/admin/Orders.vue'], resolve),
         meta: {
-            tokenRequired: true
+            tokenRequired: false
         }
     },
     {
@@ -38,7 +38,7 @@ export default {
         name: 'facts',
         component: resolve => require(['@/components/modules/admin/Facts.vue'], resolve),
         meta: {
-            tokenRequired: true
+            tokenRequired: false
         }
     },
     {

@@ -24,20 +24,19 @@
                   <v-img
                     class="white--text align-end"
                     height="200px"
-                    :src="viandDetails.image[0]"
+                    :src="viandDetails.viand_image[0]"
                     gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
                   >
                     <v-scroll-y-transition>
                       <div v-if="active" class="display-5 flex-grow-2 text-center">
-                        <EditViand :viand_to_edit="viandDetails"></EditViand>
                         <!-- <EditViand :viand_to_edit="viandDetails"></EditViand> -->
                         <v-divider class="mx-1" inset vertical></v-divider>
-                        <v-btn color="error" small fab @click="deleteViand(viandDetails._id)">
+                        <v-btn color="error" small fab @click="deleteViand(viandDetails.id)">
                           <v-icon>mdi-delete</v-icon>
                         </v-btn>
                       </div>
                     </v-scroll-y-transition>
-                    <v-card-title>{{viandDetails.name}}</v-card-title>
+                    <v-card-title>{{viandDetails.viand_name}}</v-card-title>
                   </v-img>
                 </v-card>
               </v-hover>
@@ -50,10 +49,11 @@
 </template>
 
 <style scoped>
+
 </style>
 
 <script>
-import EditViand from "@/components/modules/admin/EditViand.vue";
+// import EditViand from "@/components/modules/admin/EditViand.vue";
 export default {
   data() {
     return {
@@ -61,7 +61,7 @@ export default {
     };
   },
   components: {
-    EditViand
+    // EditViand
   },
   props: {
     viandDetails: {

@@ -10,13 +10,12 @@
         <br>
         <!-- This is for viand -->
         <v-card-text>
-          <v-form v-if="$route.name =='dashboard'" ref="viand_form">
+          <v-form v-if="$route.name =='dashboard'" ref="viand_form" @submit.prevent="uploadViand">
             <v-text-field
               label="Viand name"
               :prepend-icon="'mdi-food-variant'"
               v-model="viand.name"
               :rules="[viand.rules.required]"
-              @click:append="show1 = !show1"
             />
             <v-file-input dense v-model="viand.imgs" label="Upload Image" accept="/*image"></v-file-input>
           </v-form>
@@ -26,7 +25,6 @@
               label="Title of your fact."
               :prepend-icon="'mdi-food-variant'"
               v-model="facts.title"
-              @click:append="show1 = !show1"
               :rules="[facts.rules.required]"
             />
             <v-textarea
@@ -68,9 +66,7 @@ export default {
   data() {
     return {
       dialog: false,
-      show1: false,
       loading: false,
-      formHasErrors: false,
       viand: {
         imgs: [],
         name: "",
@@ -89,6 +85,7 @@ export default {
     };
   },
   mounted() {
+    
     this.$bus.$on("viand-form", vf => {
       this.dialog = vf;
     });
@@ -135,7 +132,6 @@ export default {
       }
     },
     uploadViand() {
-      console.log(this.viand.imgs.name, " image file")
       if (this.viand.name == "" || this.viand.imgs.name == null) {
         this.dialog = false;
         this.$swal.fire({
@@ -146,7 +142,7 @@ export default {
         });
         this.$refs.viand_form.reset();
       } else {
-        this.loading = true;
+        this.loading = false;
         var _viand = {
           name: this.viand.name
         };
@@ -157,7 +153,8 @@ export default {
           .dispatch("AddViand", formData)
           .then(res => {
             console.log(res, " response from store");
-            setTimeout(() => (this.loading = false), 2000);
+            this.$store.commit("addViand", res);
+            setTimeout(() => (this.loading = false), 1500);
             setTimeout(() => (this.dialog = false), 1000);
             setTimeout(
               () =>
@@ -166,7 +163,7 @@ export default {
                   " ",
                   "success"
                 ),
-              1000
+              500
             );
             this.$refs.viand_form.reset();
           })

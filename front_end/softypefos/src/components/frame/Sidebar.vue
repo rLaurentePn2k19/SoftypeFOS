@@ -1,5 +1,5 @@
 <template>
-  <div >
+  <div>
     <v-navigation-drawer v-model="drawer" elevation="5" permanent app :width="width">
       <v-list-item>
         <v-list-item-content>
@@ -40,8 +40,8 @@
 }
 </style>
 <script>
-import ROUTER from "@/router";
-import AUTH from "@/services/auth";
+// import ROUTER from "@/router";
+// import AUTH from "@/services/auth";
 
 export default {
   data() {
@@ -66,7 +66,7 @@ export default {
           title: "Facts",
           icon: "mdi-share",
           link: "/facts"
-        },
+        }
       ],
       drawer: false,
       group: null
@@ -95,23 +95,22 @@ export default {
     },
     logout(e) {
       e.preventDefault();
+      this.$store.dispatch("Logout");
       const Toast = this.$swal.mixin({
-          toast: true,
-          position: "top-end",
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true,
-          onOpen: toast => {
-            toast.addEventListener("mouseenter", this.$swal.stopTimer);
-            toast.addEventListener("mouseleave", this.$swal.resumeTimer);
-          }
-        });
-        Toast.fire({
-          icon: "success",
-          title: "Admin! Signed out successfully"
-        });
-      AUTH.logout()
-      ROUTER.push("/home");
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+        onOpen: toast => {
+          toast.addEventListener("mouseenter", this.$swal.stopTimer);
+          toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+        }
+      });
+      Toast.fire({
+        icon: "warning",
+        title: "Admin! You're logging out."
+      });
     }
   }
 };
