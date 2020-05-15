@@ -1,5 +1,5 @@
 <template>
-  <v-bottom-navigation :value="activeBtn" grow color="orange" permanent app>
+  <v-bottom-navigation :value="activeBtn" grow color="green" permanent app>
     <v-btn @click="showOrderList" v-if="$route.name == 'viands' ">
       <span>Order</span>
       <v-icon>mdi-cart</v-icon>

@@ -22,8 +22,6 @@
 <script>
 import MyViands from "@/components/modules/admin/MyViands.vue";
 import Progress from "@/components/frame/Progress.vue";
-// import { mapState } from 'vuex';
- 
 
 export default {
   data() {
@@ -36,32 +34,20 @@ export default {
     Progress
   },
   computed: {
-    Viands(){
+    Viands() {
       return this.$store.getters.getViands;
-    },
+    }
   },
   mounted() {
     this.$store
       .dispatch("GetUploadedViands")
       .then(res => {
-        console.log(res)
+        console.log(res);
         this.$store.commit("setViands", res);
       })
       .catch(err => {
         console.log(err);
       });
-
-    // this.$bus.$on("update-viand-view", uploaded_viand => {
-    //   console.log(uploaded_viand);
-    //   this.viands.push(uploaded_viand);
-    // });
-    // this.$bus.$on("viand-remove", id => {
-    //   this.viands = this.viands.filter(viand => {
-    //     if (viand._id != id) {
-    //       return viand;
-    //     }
-    //   });
-    // });
     this.progress = true;
   }
 };

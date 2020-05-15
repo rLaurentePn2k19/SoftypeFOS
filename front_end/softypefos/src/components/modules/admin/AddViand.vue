@@ -85,7 +85,6 @@ export default {
     };
   },
   mounted() {
-    
     this.$bus.$on("viand-form", vf => {
       this.dialog = vf;
     });
@@ -149,27 +148,19 @@ export default {
         let formData = new FormData();
         formData.append("img", this.viand.imgs);
         formData.append("viand", JSON.stringify(_viand));
-        this.$store
-          .dispatch("AddViand", formData)
-          .then(res => {
-            console.log(res, " response from store");
-            this.$store.commit("addViand", res);
-            setTimeout(() => (this.loading = false), 1500);
-            setTimeout(() => (this.dialog = false), 1000);
-            setTimeout(
-              () =>
-                this.$swal.fire(
-                  `${res.name} is successfully added.`,
-                  " ",
-                  "success"
-                ),
-              500
-            );
-            this.$refs.viand_form.reset();
-          })
-          .catch(err => {
-            console.log(err);
-          });
+        this.$store.dispatch("AddViand", formData);
+        setTimeout(() => (this.loading = false), 1500);
+        setTimeout(() => (this.dialog = false), 1000);
+        setTimeout(
+          () =>
+            this.$swal.fire(
+              `${_viand.name} is successfully added.`,
+              " ",
+              "success"
+            ),
+          500
+        );
+        this.$refs.viand_form.reset();
       }
     }
   }

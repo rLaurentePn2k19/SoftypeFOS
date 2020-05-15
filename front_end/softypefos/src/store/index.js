@@ -12,6 +12,7 @@ export default new Vuex.Store({
     state: {
         viands_To_Order: [],
         viands_To_Display: [],
+        new_Order: [], // need to fix
         user: false
     },
     getters: {
@@ -26,15 +27,21 @@ export default new Vuex.Store({
         setViands(state, viands) {
             state.viands_To_Display = viands
         },
+        setNewOrder(state, order) { // need to fix
+            state.new_Order = order
+        },
         setOrders(state, order) {
             state.viands_To_Order.push(order)
+        },
+        clearOrders(state) {
+            state.viands_To_Order = []
         },
         addViand(state, viand) {
             state.viands_To_Display.push(viand)
         },
         deleteViand(state, viand_id) {
             state.viands_To_Display = state.viands_To_Display.filter(viand => {
-                if (viand.id != viand_id) {
+                if (viand._id != viand_id) {
                     return viand
                 }
             })
@@ -47,17 +54,17 @@ export default new Vuex.Store({
         }
     },
     actions: {
-        GetUploadedViands({ commit }) {
+        GetUploadedViands({ commit }) { // solved
             return new Promise((resolve, reject) => {
                 http.get("http://localhost:4000/admin/retrieveViands").then(res => {
                     const temp_viand = []
                     res.data.forEach(data => {
                         const viand = {
-                            id: data._id,
-                            selected: false,
-                            viand_qty: 1,
-                            viand_image: data.image,
-                            viand_name: data.name
+                            _id: data._id,
+                            _selected: false,
+                            _qty: 1,
+                            _image: data.image,
+                            _name: data.name
                         };
                         temp_viand.push(viand);
                     });
@@ -68,18 +75,36 @@ export default new Vuex.Store({
                 })
             })
         },
-        AddViand({ commit }, viand) {
+        AddViand({ commit }, viand) { // solved
             return new Promise((resolve, reject) => {
                 http.post("http://localhost:4000/admin/addViand", viand).then(res => {
                     console.log(res.data, " response viand from the back-end")
-                    commit("addViand", res.data)
+                    const viand = {
+                        _id: res.data._id,
+                        _selected: false,
+                        _qty: 1,
+                        _image: res.data.image,
+                        _name: res.data.name
+                    };
+                    commit("addViand", viand)
+                    resolve()
+                }).catch(err => {
+                    reject(err)
+                })
+            })
+        },
+        DeleteViand({ commit }, viand_id) { // solved
+            return new Promise((resolve, reject) => {
+                http.delete(`http://localhost:4000/admin/deleteViand/${viand_id}`).then(res => {
+                    console.log("delete", res.data)
+                    commit("deleteViand", viand_id)
                     resolve(res.data)
                 }).catch(err => {
                     reject(err)
                 })
             })
         },
-        Login({ commit }, admin) {
+        Login({ commit }, admin) { // need to review
             return new Promise((resolve, reject) => {
                 if (admin.username == "admin" && admin.password == "Softype100") {
                     localStorage.setItem('admin', admin.password)
@@ -91,20 +116,23 @@ export default new Vuex.Store({
                 }
             })
         },
-        DeleteViand({ commit }, viand_id) {
+        Logout({ commit }) { // solved
+            commit("logout", true)
+            localStorage.clear()
+            setTimeout(() => (ROUTER.push("/home")), 2000);
+        },
+        // Orders 
+        SendOrder({ commit }, order) { // solved but have some issues
             return new Promise((resolve, reject) => {
-                http.delete(`http://localhost:4000/admin/deleteViand/${viand_id}`).then(res => {
-                    commit("deleteViand", viand_id)
-                    resolve(res)
+                http.post("http://localhost:4000/order/addOrder", order).then(res => {
+                    console.log(res.data, "order response");
+                    commit("setNewOrder", res.data)
+                    resolve(res.data)
                 }).catch(err => {
                     reject(err)
                 })
             })
-        },
-        Logout({ commit }) {
-            commit("logout", true)
-            localStorage.clear()
-            setTimeout(() => (ROUTER.push("/home")), 2000);
         }
+        // Facts
     }
 })

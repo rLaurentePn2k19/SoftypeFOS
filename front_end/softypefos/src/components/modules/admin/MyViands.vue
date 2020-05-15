@@ -24,19 +24,18 @@
                   <v-img
                     class="white--text align-end"
                     height="200px"
-                    :src="viandDetails.viand_image[0]"
+                    :src="viandDetails._image[0]"
                     gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
                   >
                     <v-scroll-y-transition>
                       <div v-if="active" class="display-5 flex-grow-2 text-center">
-                        <!-- <EditViand :viand_to_edit="viandDetails"></EditViand> -->
                         <v-divider class="mx-1" inset vertical></v-divider>
-                        <v-btn color="error" small fab @click="deleteViand(viandDetails.id)">
+                        <v-btn color="error" small fab @click="deleteViand(viandDetails._id)">
                           <v-icon>mdi-delete</v-icon>
                         </v-btn>
                       </div>
                     </v-scroll-y-transition>
-                    <v-card-title>{{viandDetails.viand_name}}</v-card-title>
+                    <v-card-title>{{viandDetails._name}}</v-card-title>
                   </v-img>
                 </v-card>
               </v-hover>
@@ -49,33 +48,27 @@
 </template>
 
 <style scoped>
-
 </style>
 
 <script>
-// import EditViand from "@/components/modules/admin/EditViand.vue";
 export default {
   data() {
     return {
       isActive: false
     };
   },
-  components: {
-    // EditViand
-  },
   props: {
     viandDetails: {
       type: Object
     }
   },
-  mounted(){
-     this.$bus.$on("viands", viands => {
+  mounted() {
+    this.$bus.$on("viands", viands => {
       console.log(viands);
     });
   },
   methods: {
     deleteViand(id) {
-      // delete the viand
       console.log(id);
       this.$swal
         .fire({
@@ -89,14 +82,12 @@ export default {
         })
         .then(result => {
           if (result.value) {
-            this.$axios
-              .delete(`http://localhost:4000/admin/deleteViand/${id}`)
+            this.$store
+              .dispatch("DeleteViand", id)
               .then(res => {
-                console.log(res);
-                this.$bus.$emit("viand-remove", id);
                 this.$swal.fire(
                   "Deleted!",
-                  "The viand has been deleted.",
+                  `${res.name} has been deleted.`,
                   "success"
                 );
               })

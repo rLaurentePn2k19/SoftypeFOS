@@ -23,7 +23,7 @@
                 <v-img
                   class="white--text align-end"
                   height="200px"
-                  :src="viand.viand_image[0]"
+                  :src="viand._image[0]"
                   gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
                 >
                   <v-scroll-y-transition>
@@ -31,8 +31,8 @@
                       <v-btn
                         color="primary"
                         medium
-                        @click="addToCart(viand.id)"
-                      >{{viand.selected ? added : add }}</v-btn>
+                        @click="addToCart(viand._id)"
+                      >{{viand._selected ? added : add }}</v-btn>
                       <v-form>
                         <v-text-field
                           label="Quantity"
@@ -40,14 +40,14 @@
                           :prepend-icon="'mdi-plus'"
                           type="number"
                           class="test"
-                          v-model="viand.viand_qty"
-                          @change="changeQuantity(viand.id)"
+                          v-model="viand._qty"
+                          @change="changeQuantity(viand._id)"
                           outlined
                         />
                       </v-form>
                     </div>
                   </v-scroll-y-transition>
-                  <v-card-title>{{viand.viand_name}}</v-card-title>
+                  <v-card-title>{{viand._name}}</v-card-title>
                 </v-img>
               </v-card>
             </v-item>
@@ -92,47 +92,46 @@ export default {
     this.$store
       .dispatch("GetUploadedViands")
       .then(res => {
-        console.log(res)
+        console.log(res);
         this.$store.commit("setViands", res);
       })
       .catch(err => {
         console.log(err);
       });
     console.log(this.viands_To_Display);
-    // this.$bus.$on("viands", viands => {
-    //   console.log(viands);
-    // });
-    // this.$bus.$on("cancel-order", cancel => {
-    //   console.log(cancel);
-    //   this.viandsToOrder = [];
-    // });
-    // this.$bus.$on("done-order", done => {
-    //   this.viandsToOrder = [];
-    //   for (let i = 0; i < this.viands.length; i++) {
-    //     this.viands[i].selected = !done;
-    //   }
-    // });
+    this.$bus.$on("cancel-order", cancel => { // need to fix
+      this.viands_To_Display.filter(viand => {
+        viand._selected = !cancel;
+        viand._qty = 1;
+        this.$store.commit("clearOrders");
+      });
+    });
+    this.$bus.$on("done-order", done => { // need to fix
+      console.log(done)
+      // this.viands_To_Order.filter(viand => {
+      //   viand._selected = !done;
+      //   viand._qty = 1;
+      // });
+    });
   },
   methods: {
     changeQuantity(id) {
+      console.log(id);
       this.viands_To_Order.forEach(order => {
-        if (order._id == id) {
-          order.quantity = order.qty;
-        }
+        console.log(order, " odere");
       });
     },
     addToCart(id) {
       this.viands_To_Display.filter(viand => {
-        if (viand.id == id) {
-          if (viand.selected == true) {
+        if (viand._id == id) {
+          if (viand._selected == true) {
             this.$swal.fire({
               icon: "warning",
-              title: `${viand.viand_name} is already added.`
+              title: `${viand._name} is already added.`
             });
           } else {
-            // this.viandsToOrder.push(viand);
-            this.$store.commit("setOrders",viand)
-            viand.selected = true;
+            this.$store.commit("setOrders", viand);
+            viand._selected = true;
           }
         }
       });

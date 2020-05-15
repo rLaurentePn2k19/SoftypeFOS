@@ -20,14 +20,14 @@
           <v-list flat>
             <v-subheader>Viand/s you order:</v-subheader>
             <v-list-item-group v-model="item">
-              <v-list-item v-for="(order, i) in OrderList" :key="i.id">
+              <v-list-item v-for="(order, i) in OrderList" :key="i._id">
                 <v-list-item-icon>
-                  <v-btn fab small color="error" text @click="removeViand(order.id)">
+                  <v-btn fab small color="error" text @click="removeViand(order._id)">
                     <v-icon>mdi-delete</v-icon>
                   </v-btn>
                 </v-list-item-icon>
                 <v-list-item-content>
-                  <v-list-item-title v-text="order.viand_name +' : '+ order.viand_qty "></v-list-item-title>
+                  <v-list-item-title v-text="order._name +' : '+ order._qty "></v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </v-list-item-group>
@@ -52,7 +52,6 @@
 
 
 <script>
-import axios from "axios";
 
 export default {
   name: "Order-Form",
@@ -78,7 +77,6 @@ export default {
     }
   },
   mounted() {
-    
     this.$bus.$on("order-viand", bol => {
       if (this.Orders.length) {
         this.dialog = bol;
@@ -99,9 +97,9 @@ export default {
     removeViand(id) {
       // remove selected viand from the order list
       this.OrderList.forEach(viand => {
-        if (id == viand.id) {
+        if (id == viand._id) {
           this.OrderList.splice(viand, 1);
-          console.log("removed");
+          console.log("removed", viand);
         }
       });
     },
@@ -109,8 +107,8 @@ export default {
       // a method for sending the order to the back end
       this.Orders.forEach(order => {
         let order_obj = {
-          viand_name: order.viand_name,
-          viand_qty: order.viand_qty
+          viand_name: order._name,
+          viand_qty: order._qty
         };
         this.new_order.push(order_obj);
       });
@@ -130,20 +128,31 @@ export default {
           text: "Please indicate you nickname/name."
         });
       } else {
-        axios
-          .post(`http://localhost:4000/order/addOrder`, viand_order_obj) // sending the object which is the order to the back end
-          .then(res => {
-            setTimeout(() => (this.loading = false), 2000);
-            setTimeout(() => (this.dialog = false), 500);
-            console.log(res.data, "response");
-            this.isDone = true;
-            this.name = "";
-            this.$bus.$emit("done-order", this.isDone); // an event if done ordering
-          })
-          .catch(error => {
-            console.error("error order", error);
-          }),
+        this.$store.dispatch("SendOrder", viand_order_obj).then(res =>{
+          setTimeout(() => (this.loading = false), 2000);
+          setTimeout(() => (this.dialog = false), 500);
+          this.name = "";
+          this.isDone = true;
           this.$swal.fire("Yehey!", "Successfully order.", "success");
+          this.$bus.$emit("done-order", this.isDone);
+          console.log(res)
+        }).catch(err =>{
+          console.log(err)
+        })
+        // axios
+        //   .post(`http://localhost:4000/order/addOrder`, viand_order_obj) // sending the object which is the order to the back end
+        //   .then(res => {
+        //     setTimeout(() => (this.loading = false), 2000);
+        //     setTimeout(() => (this.dialog = false), 500);
+        //     console.log(res.data, "response");
+        //     this.isDone = true;
+        //     this.name = "";
+        //     this.$bus.$emit("done-order", this.isDone); // an event if done ordering
+        //   })
+        //   .catch(error => {
+        //     console.error("error order", error);
+        //   }),
+        //   this.$swal.fire("Yehey!", "Successfully order.", "success");
       }
     }
   }
