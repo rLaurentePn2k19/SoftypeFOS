@@ -5,14 +5,15 @@ import ROUTER from "@/router"
 
 Vue.use(Vuex);
 
-// add viand from the admin dashboard needs to fix
-// update view in dashboard 
+// bug in order, the quantity
 
 export default new Vuex.Store({
     state: {
         viands_To_Order: [],
         viands_To_Display: [],
-        new_Order: [], // need to fix
+        order_To_Display: [],
+        facts: [],
+        facts_To_Edit: {},
         user: false
     },
     getters: {
@@ -22,29 +23,72 @@ export default new Vuex.Store({
         getOrders: state => {
             return state.viands_To_Order
         },
+        getOrderToDisplay: state => {
+            return state.order_To_Display
+        },
+        getOrderToDisplayLength: state => {
+            return state.order_To_Display.length
+        },
+        getFacts: state => {
+            return state.facts
+        },
+        getFactsToEdit: state => {
+            return state.facts_To_Edit
+        }
     },
     mutations: {
-        setViands(state, viands) {
-            state.viands_To_Display = viands
-        },
-        setNewOrder(state, order) { // need to fix
-            state.new_Order = order
-        },
-        setOrders(state, order) {
+        setOrders(state, order) { // before sending the order or while choosing the viand
             state.viands_To_Order.push(order)
         },
-        clearOrders(state) {
+        clearOrders(state) { // clear the order
             state.viands_To_Order = []
+        },
+        setViands(state, viands) {
+            state.viands_To_Display = viands
         },
         addViand(state, viand) {
             state.viands_To_Display.push(viand)
         },
-        deleteViand(state, viand_id) {
+        removeOrder(state, id) {
+            state.viands_To_Order = state.viands_To_Order.filter(order => {
+                if (order._id != id) {
+                    return order
+                }
+            })
+        },
+        deleteViand(state, id) {
             state.viands_To_Display = state.viands_To_Display.filter(viand => {
-                if (viand._id != viand_id) {
+                if (viand._id != id) {
                     return viand
                 }
             })
+        },
+        deleteFact(state, id) {
+            state.facts = state.facts.filter(fact => {
+                if (fact._id != id) {
+                    return fact
+                }
+            })
+        },
+        setOrderToDisplay(state, orders) {
+            state.order_To_Display = orders
+        },
+        addFact(state, fact) {
+            state.facts.push(fact)
+        },
+        addEditedFact(state, new_fact) {
+            state.facts.forEach(fact => {
+                if (new_fact._id == fact._id) {
+                    state.facts.splice(fact, 1)
+                }
+            });
+            state.facts.push(new_fact)
+        },
+        setFacts(state, facts) {
+            state.facts = facts
+        },
+        setFactsToEdit(state, fact) {
+            state.facts_To_Edit = fact
         },
         setUser(state, user) {
             state.user = user
@@ -78,7 +122,6 @@ export default new Vuex.Store({
         AddViand({ commit }, viand) { // solved
             return new Promise((resolve, reject) => {
                 http.post("http://localhost:4000/admin/addViand", viand).then(res => {
-                    console.log(res.data, " response viand from the back-end")
                     const viand = {
                         _id: res.data._id,
                         _selected: false,
@@ -86,8 +129,10 @@ export default new Vuex.Store({
                         _image: res.data.image,
                         _name: res.data.name
                     };
-                    commit("addViand", viand)
-                    resolve()
+                    setTimeout(() => {
+                        commit("addViand", viand)
+                    }, 2000);
+                    resolve(res)
                 }).catch(err => {
                     reject(err)
                 })
@@ -96,7 +141,6 @@ export default new Vuex.Store({
         DeleteViand({ commit }, viand_id) { // solved
             return new Promise((resolve, reject) => {
                 http.delete(`http://localhost:4000/admin/deleteViand/${viand_id}`).then(res => {
-                    console.log("delete", res.data)
                     commit("deleteViand", viand_id)
                     resolve(res.data)
                 }).catch(err => {
@@ -122,17 +166,75 @@ export default new Vuex.Store({
             setTimeout(() => (ROUTER.push("/home")), 2000);
         },
         // Orders 
-        SendOrder({ commit }, order) { // solved but have some issues
+        SendOrder({ commit }, order) { // solved but have some issues in quantity inputting
             return new Promise((resolve, reject) => {
                 http.post("http://localhost:4000/order/addOrder", order).then(res => {
-                    console.log(res.data, "order response");
-                    commit("setNewOrder", res.data)
+                    commit("setOrders", res.data)
                     resolve(res.data)
                 }).catch(err => {
                     reject(err)
                 })
             })
-        }
+        },
+        GetOrders() { // solved
+            return new Promise((resolve, reject) => {
+                http.get("http://localhost:4000/order/retrieveOrders").then(res => {
+                    resolve(res.data.data)
+                }).catch(err => {
+                    reject(err)
+                })
+            })
+        },
         // Facts
+        GetFacts({ commit }) {
+            return new Promise((resolve, reject) => {
+                http.get("http://localhost:4000/admin/getFact").then(res => {
+                    commit("setFacts", res.data)
+                    resolve(res.data)
+                }).catch(err => {
+                    reject(err)
+                })
+            })
+        },
+        AddFact({ commit }, fact) {
+            return new Promise((resolve, reject) => {
+                http.post("http://localhost:4000/admin/addFact", fact).then(res => {
+                    setTimeout(() => {
+                        commit("addFact", res.data)
+                    }, 2000);
+                    resolve(res.data)
+                }).catch(err => {
+                    reject(err)
+                })
+            })
+        },
+        DeleteFact({ commit }, fact_id) {
+            return new Promise((resolve, reject) => {
+                http.delete(`http://localhost:4000/admin/deleteFact/${fact_id}`).then(res => {
+                    console.log(res.data)
+                    setTimeout(() => {
+                        commit("deleteFact", fact_id)
+                    }, 1000);
+                    resolve(res)
+                }).catch(err => {
+                    reject(err)
+                })
+            })
+        },
+        EditFact({ commit }, data) {
+            return new Promise((resolve, reject) => {
+                http.put(`http://localhost:4000/admin/updateFact/${data.id}`, data).then(res => {
+                    setTimeout(() => {
+                        commit("addEditedFact", res.data)
+                    }, 2000);
+                    resolve(res.data)
+                }).catch(err => {
+                    console.log(err)
+                    reject(err)
+                })
+
+            })
+        }
+
     }
 })

@@ -6,13 +6,12 @@
 </template>
 
 <style>
- 
 </style>
 
 
 <script>
-import parallax from "@/components/modules/user/core-view/Parallax.vue"
-import dateTrivia from "@/components/modules/user/core-view/Date_trivia.vue"
+import parallax from "@/components/modules/user/core-view/Parallax.vue";
+import dateTrivia from "@/components/modules/user/core-view/Date_trivia.vue";
 
 export default {
   data() {
@@ -20,7 +19,10 @@ export default {
   },
   components: {
     parallax,
-    dateTrivia,
+    dateTrivia
+  },
+  beforeCreate() {
+    // alert("welcome");
   }
 };
 </script>

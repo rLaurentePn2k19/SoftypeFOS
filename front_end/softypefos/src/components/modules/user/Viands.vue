@@ -36,7 +36,6 @@
                       <v-form>
                         <v-text-field
                           label="Quantity"
-                          name="quantity"
                           :prepend-icon="'mdi-plus'"
                           type="number"
                           class="test"
@@ -53,7 +52,7 @@
             </v-item>
           </v-col>
         </v-row>
-        <Order :Orders="viands_To_Order"></Order>
+        <Order></Order>
       </v-container>
     </v-item-group>
   </v-lazy>
@@ -75,8 +74,6 @@ import { mapState } from "vuex";
 export default {
   data() {
     return {
-      viandsToOrder: [],
-      viands: [],
       isActive: false,
       added: "Added",
       add: "Add"
@@ -99,26 +96,12 @@ export default {
         console.log(err);
       });
     console.log(this.viands_To_Display);
-    this.$bus.$on("cancel-order", cancel => { // need to fix
-      this.viands_To_Display.filter(viand => {
-        viand._selected = !cancel;
-        viand._qty = 1;
-        this.$store.commit("clearOrders");
-      });
-    });
-    this.$bus.$on("done-order", done => { // need to fix
-      console.log(done)
-      // this.viands_To_Order.filter(viand => {
-      //   viand._selected = !done;
-      //   viand._qty = 1;
-      // });
-    });
   },
   methods: {
     changeQuantity(id) {
       console.log(id);
-      this.viands_To_Order.forEach(order => {
-        console.log(order, " odere");
+      this.viands_To_Display.forEach(viand => {
+        console.log(viand._qty, " this qty");
       });
     },
     addToCart(id) {

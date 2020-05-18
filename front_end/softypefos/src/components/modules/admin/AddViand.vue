@@ -40,14 +40,14 @@
         </v-card-text>
         <!-- This is for viand -->
         <v-card-actions v-if="$route.name =='dashboard'">
-          <v-btn text @click="$refs.viand_form.reset()">Clear</v-btn>
+          <v-btn text @click="clear">Clear</v-btn>
           <v-spacer></v-spacer>
           <v-btn color="error" @click="cancel">Cancel</v-btn>
           <v-btn color="success" @click="uploadViand">Done</v-btn>
         </v-card-actions>
         <!-- This is for facts -->
         <v-card-actions v-if="$route.name =='facts'">
-          <v-btn text @click="$refs.fact_form.reset()">Clear</v-btn>
+          <v-btn text @click="clear">Clear</v-btn>
           <v-spacer></v-spacer>
           <v-btn color="error" @click="cancel">Cancel</v-btn>
           <v-btn color="success" @click="addFact">Done</v-btn>
@@ -57,10 +57,7 @@
   </v-row>
 </template>
 
-
 <script>
-import _FuncFact from "./services/helper";
-
 export default {
   name: "Viand-Fact-Form",
   data() {
@@ -92,6 +89,7 @@ export default {
   methods: {
     addFact() {
       if (this.facts.title == "" || this.facts.detail == "") {
+        this.dialog = true;
         this.$swal.fire({
           title: "Please fill up the provided fields.",
           width: 500,
@@ -104,35 +102,49 @@ export default {
           detail: this.facts.detail
         };
         this.loading = true;
-        _FuncFact
-          .addFact(fact)
+        this.$store
+          .dispatch("AddFact", fact)
           .then(res => {
-            setTimeout(() => (this.loading = false), 2000);
-            console.log(res.data, "response");
-            setTimeout(() => (this.dialog = false), 2000);
-            setTimeout(() => this.$bus.$emit("new-fact", res.data), 2500);
             setTimeout(
-              () => this.$swal.fire("Successfully added.", " ", "success"),
-              2600
+              () => (
+                (this.loading = false),
+                (this.dialog = false),
+                this.$swal.fire("Successfully added.", " ", "success")
+              ),
+              2000
             );
+            console.log(res);
           })
           .catch(err => {
             console.log(err);
           });
+        this.facts.title = "";
+        this.facts.detail = "";
+      }
+    },
+    clear() {
+      if (this.$route.name == "facts") {
+        this.facts.title = "";
+        this.facts.detail = "";
+      } else if (this.$route.name == "dashboard") {
+        this.viand.name = "";
+        this.viand.imgs = null;
       }
     },
     cancel() {
       this.dialog = false;
       this.loading = false;
       if (this.$route.name == "facts") {
-        this.$refs.fact_form.reset();
+        this.facts.title = "";
+        this.facts.detail = "";
       } else if (this.$route.name == "dashboard") {
-        this.$refs.viand_form.reset();
+        this.viand.name = "";
+        this.viand.imgs = null;
       }
     },
     uploadViand() {
       if (this.viand.name == "" || this.viand.imgs.name == null) {
-        this.dialog = false;
+        this.dialog = true;
         this.$swal.fire({
           title: "Please fill up the provided fields.",
           width: 500,
@@ -141,26 +153,36 @@ export default {
         });
         this.$refs.viand_form.reset();
       } else {
-        this.loading = false;
+        this.loading = true;
         var _viand = {
           name: this.viand.name
         };
         let formData = new FormData();
         formData.append("img", this.viand.imgs);
         formData.append("viand", JSON.stringify(_viand));
-        this.$store.dispatch("AddViand", formData);
-        setTimeout(() => (this.loading = false), 1500);
-        setTimeout(() => (this.dialog = false), 1000);
-        setTimeout(
-          () =>
-            this.$swal.fire(
-              `${_viand.name} is successfully added.`,
-              " ",
-              "success"
-            ),
-          500
-        );
-        this.$refs.viand_form.reset();
+        this.$store
+          .dispatch("AddViand", formData)
+          .then(res => {
+            setTimeout(
+              () => (
+                (this.loading = false),
+                (this.dialog = false),
+                this.$swal.fire(
+                  `${_viand.name} is successfully added.`,
+                  " ",
+                  "success"
+                )
+              ),
+              2000
+            );
+            console.log(res);
+          })
+          .catch(err => {
+            console.log(err);
+          });
+        this.viand.name = "";
+        this.viand.imgs = null;
+        // this.$refs.viand_form.reset()
       }
     }
   }

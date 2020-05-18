@@ -9,18 +9,12 @@
         <br>
         <v-card-text>
           <v-form>
-            <v-text-field
-              label="Name"
-              :prepend-icon="'mdi-account'"
-              type="text"
-              v-model="name"
-              v-on:keyup.enter="order"
-            />
+            <v-text-field label="Name" :prepend-icon="'mdi-account'" type="text" v-model="name"/>
           </v-form>
           <v-list flat>
             <v-subheader>Viand/s you order:</v-subheader>
-            <v-list-item-group v-model="item">
-              <v-list-item v-for="(order, i) in OrderList" :key="i._id">
+            <v-list-item-group>
+              <v-list-item v-for="(order, i) in viands_To_Order" :key="i._id">
                 <v-list-item-icon>
                   <v-btn fab small color="error" text @click="removeViand(order._id)">
                     <v-icon>mdi-delete</v-icon>
@@ -52,33 +46,27 @@
 
 
 <script>
+import { mapState } from "vuex";
 
 export default {
   name: "Order-Form",
-  props: {
-    Orders: {
-      type: Array
-    }
-  },
   data() {
     return {
       loading: false,
       dialog: false,
       name: "",
-      item: 1,
-      new_order: [],
-      isDone: false
+      temp_order: []
     };
   },
   computed: {
-    OrderList() {
-      // it will return the list of order or empty list base on the event sent
-      return this.isDone ? [] : this.Orders;
+    ...mapState(["viands_To_Order"]),
+    GetOrders(){
+      return this.$store.getters.getOrders
     }
   },
   mounted() {
     this.$bus.$on("order-viand", bol => {
-      if (this.Orders.length) {
+      if (this.viands_To_Order.length) {
         this.dialog = bol;
       } else {
         this.$swal.fire({
@@ -90,69 +78,55 @@ export default {
     });
   },
   methods: {
-    cancelOrder(){
-      this.dialog = false
-      this.$bus.$emit("cancel-order", true)
+    cancelOrder() {
+      this.dialog = false;
+      this.name = "";
+      this.$store.state.viands_To_Display.filter(viand => {
+        viand._selected = false;
+        viand._qty = 1;
+      });
+      this.$store.commit("clearOrders");
     },
     removeViand(id) {
+      console.log("removed", id);
       // remove selected viand from the order list
-      this.OrderList.forEach(viand => {
+      this.GetOrders.forEach(viand => {
         if (id == viand._id) {
-          this.OrderList.splice(viand, 1);
-          console.log("removed", viand);
+          this.$store.commit("removeOrder", viand._id)
         }
       });
     },
     sendOrder() {
       // a method for sending the order to the back end
-      this.Orders.forEach(order => {
-        let order_obj = {
-          viand_name: order._name,
-          viand_qty: order._qty
-        };
-        this.new_order.push(order_obj);
-      });
-      console.log(this.new_order, "new order");
-      const viand_order_obj = {
-        name: this.name,
-        orders: this.new_order
-      };
-
-      console.log(viand_order_obj, " object to back-end");
-
       if (this.name == "") {
-        // if there is no name provided
         this.$swal.fire({
           icon: "warning",
           title: "Hey!",
           text: "Please indicate you nickname/name."
         });
       } else {
-        this.$store.dispatch("SendOrder", viand_order_obj).then(res =>{
-          setTimeout(() => (this.loading = false), 2000);
-          setTimeout(() => (this.dialog = false), 500);
-          this.name = "";
-          this.isDone = true;
-          this.$swal.fire("Yehey!", "Successfully order.", "success");
-          this.$bus.$emit("done-order", this.isDone);
-          console.log(res)
-        }).catch(err =>{
-          console.log(err)
-        })
-        // axios
-        //   .post(`http://localhost:4000/order/addOrder`, viand_order_obj) // sending the object which is the order to the back end
-        //   .then(res => {
-        //     setTimeout(() => (this.loading = false), 2000);
-        //     setTimeout(() => (this.dialog = false), 500);
-        //     console.log(res.data, "response");
-        //     this.isDone = true;
-        //     this.name = "";
-        //     this.$bus.$emit("done-order", this.isDone); // an event if done ordering
-        //   })
-        //   .catch(error => {
-        //     console.error("error order", error);
-        //   }),
-        //   this.$swal.fire("Yehey!", "Successfully order.", "success");
+        const new_Order = {
+          costumer_name: this.name,
+          orders: this.$store.getters.getOrders
+        };
+        console.log(new_Order, " new Order");
+        this.$store
+          .dispatch("SendOrder", new_Order)
+          .then(res => {
+            setTimeout(() => (this.loading = false), 2000);
+            setTimeout(() => (this.dialog = false), 500);
+            this.$store.state.viands_To_Display.filter(viand => {
+              viand._selected = false;
+              viand._qty = 1;
+            });
+            this.name = "";
+            this.$swal.fire("Yehey!", "Successfully order.", "success");
+            this.$store.commit("clearOrders");
+            console.log(res);
+          })
+          .catch(err => {
+            console.log(err);
+          });
       }
     }
   }

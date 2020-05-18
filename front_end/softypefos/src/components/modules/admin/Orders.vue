@@ -6,13 +6,17 @@
       <div class="align-end"></div>
     </div>
 
-    <v-data-iterator :items="orders" :orders-per-page.sync="length_list" hide-default-footer>
+    <v-data-iterator
+      :items="order_To_Display"
+      :orders-per-page.sync="length_list"
+      hide-default-footer
+    >
       <template v-slot:default="props">
         <v-row>
           <v-col v-for="order in props.items" :key="order.id" cols="12" sm="6" md="4" lg="3">
             <v-card>
               <v-card-title class="subheading font-weight-bold">
-                {{`${order.name}`}}
+                {{`${order.costumer_name}`}}
                 <v-spacer></v-spacer>
                 <v-btn fab small color="success" @click="check">
                   <v-icon>mdi-check</v-icon>
@@ -23,8 +27,8 @@
 
               <v-list dense v-for="viand in order.viands" :key="viand.id">
                 <v-list-item>
-                  <v-list-item-content>{{viand.viand_name}}</v-list-item-content>
-                  <v-list-item-content class="align-end">{{ viand.viand_qty}}</v-list-item-content>
+                  <v-list-item-content>{{viand._name}}</v-list-item-content>
+                  <v-list-item-content class="align-end">{{ viand._qty}}</v-list-item-content>
                 </v-list-item>
               </v-list>
             </v-card>
@@ -36,37 +40,33 @@
 </template>
 
 <script>
-import axios from "axios";
+import { mapState } from "vuex";
 
 export default {
   name: "List-Orders",
   data: () => ({
-    orders: []
+    temp_orders: [],
+    currentDateWithFormat: new Date()
+      .toJSON()
+      .slice(0, 10)
+      .replace(/-/g, "/")
   }),
   computed: {
+    ...mapState(["order_To_Display"]),
     length_list() {
-      return this.orders.length;
+      return this.$store.getters.getOrderToDisplayLength;
     }
   },
   mounted() {
-    // var currentDate = new Date();
-    // console.log(currentDate, " tes 0");
-
-    const currentDateWithFormat = new Date()
-      .toJSON()
-      .slice(0, 10)
-      .replace(/-/g, "/");
-
-    axios
-      .get("http://localhost:4000/order/retrieveOrders")
+    this.$store
+      .dispatch("GetOrders")
       .then(res => {
-        console.log(res.data, "data orders from be")
-        for (let i = 0; i < res.data.data.length; i++) {
-          if (res.data.data[i].date == currentDateWithFormat) {
-            this.orders.push(res.data.data[i]);
+        for (let i = 0; i < res.length; i++) {
+          if (res[i].date == this.currentDateWithFormat) {
+            this.temp_orders.push(res[i]);
+            this.$store.commit("setOrderToDisplay", this.temp_orders);
           }
         }
-        console.table(this.orders);
       })
       .catch(err => {
         console.log(err);

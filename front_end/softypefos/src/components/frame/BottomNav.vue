@@ -41,7 +41,7 @@ export default {
   name: "Bottom-Nav",
   data() {
     return {
-      activeBtn: 1
+      activeBtn: 1,
     };
   },
   methods: {

@@ -1,52 +1,51 @@
 <template>
   <div>
-    <v-card>
-      <v-card-title class="subheading font-weight-bold">
-        {{factDetails.title}}
-        <v-spacer></v-spacer>
-        <v-btn fab small text color="warning" @click="editFact(factDetails)">
-          <v-icon>mdi-pencil</v-icon>
-        </v-btn>
-        <v-divider inset vertical></v-divider>
-        <v-btn fab text small color="error" @click="deleteFact(factDetails._id)">
-          <v-icon>mdi-delete</v-icon>
-        </v-btn>
-      </v-card-title>
-      <v-divider></v-divider>
-      <v-list>
-        <v-list-item>
-          <v-list-item-content>:{{factDetails.detail}}</v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-card>
-    <EditFact :key="factDetails._id" :factToEdit="factDetails"/>
+    <v-row>
+      <v-col v-for="fact in facts" :key="fact._id" cols="12" sm="6" md="4" lg="3">
+        <v-card>
+          <v-card-title class="subheading font-weight-bold">
+            {{fact.title}}
+            <v-spacer></v-spacer>
+            <v-btn fab small text color="warning" @click="editFact(fact)">
+              <v-icon>mdi-pencil</v-icon>
+            </v-btn>
+            <v-divider inset vertical></v-divider>
+            <v-btn fab text small color="error" @click="deleteFact(fact._id)">
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
+          </v-card-title>
+          <v-divider></v-divider>
+          <v-list>
+            <v-list-item>
+              <v-list-item-content>:{{fact.detail}}</v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-card>
+      </v-col>
+    </v-row>
+    <EditFact />
   </div>
 </template>
 
 
 <script>
-
-import _FuncFact from "./services/helper";
 import EditFact from "@/components/modules/admin/EditFact.vue";
+import { mapState } from "vuex";
 
 export default {
   name: "card",
-  props: {
-    factDetails: {
-      type: Object
-    }
-  },
   components: {
     EditFact
   },
   data() {
     return {};
   },
+  computed: {
+    ...mapState(["facts"]),
+  },
   methods: {
     editFact(data) {
-      //   this.$bus.$emit("editFact", data);
-      this.$refs.modal.dialog = true;
-      this.$refs.modal.factToEdit = data;
+      this.$bus.$emit("edit-fact", data);
     },
     deleteFact(id) {
       this.$swal
@@ -61,16 +60,11 @@ export default {
         })
         .then(result => {
           if (result.value) {
-            _FuncFact
-              .deleteFact(id)
+            this.$store
+              .dispatch("DeleteFact", id)
               .then(res => {
                 console.log(res);
-                this.$bus.$emit("fact-remove", id);
-                this.$swal.fire(
-                  "Deleted!",
-                  "Fact has been deleted.",
-                  "success"
-                );
+                this.$swal.fire("Deleted successfully!", "", "success");
               })
               .catch(err => {
                 console.log(err);

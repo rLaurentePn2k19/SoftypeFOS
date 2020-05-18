@@ -1,12 +1,7 @@
 <template>
   <v-row justify="center">
     <v-dialog v-model="dialog" persistent max-width="350">
-      <!-- <template v-slot:activator="{ on }">
-        <v-btn fab text small color="warning" v-on="on" style="margin-left: 10%">
-          <v-icon>mdi-pencil</v-icon>
-        </v-btn>
-      </template> -->
-      <v-card max-width="350px">
+      <v-card max-width="350px" :loading="loading">
         <v-toolbar color="orange" dark flat>
           <v-toolbar-title>Edit fact</v-toolbar-title>
           <v-spacer/>
@@ -14,18 +9,14 @@
         <br>
         <v-card-text>
           <v-form ref="fact_form">
-            <v-text-field
-              label="Edit title"
-              :prepend-icon="'mdi-food-variant'"
-              v-model="newFact.title"
-            />
+            <v-text-field label="Edit title" :prepend-icon="'mdi-food-variant'" v-model="title"/>
             <v-textarea
               :prepend-icon="'mdi-pencil-box'"
               auto-grow
               filled
               label="Edit details"
               rows="1"
-              v-model="newFact.detail"
+              v-model="detail"
             ></v-textarea>
           </v-form>
         </v-card-text>
@@ -41,31 +32,30 @@
 </template>
 
 <script>
-import _FuncFact from "./services/helper";
+import { mapState } from "vuex";
 
 export default {
-  props: {
-    factToEdit: {
-      type: Object
-    }
-  },
   data() {
     return {
       dialog: false,
-      newFact: {
-        id: "",
-        title: "",
-        detail: ""
-      }
+      loading: false,
+      id: "",
+      title: "",
+      detail: ""
     };
   },
-  watch: {
-    newFact() {
-      return this.newFact;
-    }
+  computed: {
+    ...mapState(["facts_To_Edit"])
   },
   mounted() {
-    Object.assign(this.newFact, this.factToEdit);
+    // Object.assign(this.newFact, this.factToEdit);
+    this.$bus.$on("edit-fact", data => {
+      this.$store.commit("setFactsToEdit", data);
+      this.id = data._id;
+      this.title = this.facts_To_Edit.title;
+      this.detail = this.facts_To_Edit.detail;
+      this.dialog = true;
+    });
   },
   methods: {
     cancel() {
@@ -73,17 +63,30 @@ export default {
       this.loading = false;
     },
     submit() {
-      if (this.newFact.title == "" || this.newFact.detail == "") {
+      // this is where i paused
+      console.log(this.title, " new title");
+      console.log(this.detail, " new detail");
+      if (this.title == "" || this.detail == "") {
         this.$swal.fire("Invalid changes", "Please try again", "error");
       } else {
-        _FuncFact
-          .editFact(this.newFact)
+        const fact_edit = {
+          id: this.id,
+          title: this.title,
+          detail: this.detail
+        };
+        this.loading = true;
+        this.$store
+          .dispatch("EditFact", fact_edit)
           .then(res => {
-            this.$bus.$emit("updated-fact", res.data);
-            this.$swal.fire("Successfully updated", " ", "success");
-            console.log(res.data, "response");
-            this.dialog = false;
-            // setTimeout(() => location.reload(), 1000);
+            console.log(res);
+            setTimeout(
+              () => (
+                (this.loading = false),
+                (this.dialog = false),
+                this.$swal.fire("Successfully updated.", " ", "success")
+              ),
+              2000
+            );
           })
           .catch(err => {
             console.log(err);
