@@ -67,7 +67,7 @@ exports.getFact = (req, res) => {
 }
 
 exports.updateFact = (req, res) => {
-    Fact.findByIdAndUpdate(req.body._id, req.body, {new:true},(err, data) => {
+    Fact.findByIdAndUpdate(req.params.id, req.body, { new: true }, (err, data) => {
         if (err) {
             res.status(500).send(err);
         }

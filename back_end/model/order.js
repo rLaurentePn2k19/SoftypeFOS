@@ -3,11 +3,11 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var order = new Schema({
-  name: { type: String, required: true },
+  costumer_name: { type: String, required: true },
   viands: [
     {
-      viand_name: { type: String, required: true },
-      viand_qty: { type: Number, required: true },
+      _name: { type: String, required: true },
+      _qty: { type: Number, required: true },
     }
   ],
   date: {type: String}

@@ -1,14 +1,14 @@
 const Order = require('../model/order');
 
 exports.saveOrder = (req, res) => {
-    
+    console.log(req.body, " order body back end")
     const date = new Date()
       .toJSON()
       .slice(0, 10)
       .replace(/-/g, "/");
 
     const newOrder = new Order({
-        name: req.body.name,
+        costumer_name: req.body.costumer_name,
         viands: req.body.orders,
         date: date,
     });
