@@ -24,8 +24,8 @@
         transition="scale-transition"
         width="40"
       />
-      <v-toolbar-title style="font-style: italic;" id="test">Softype Food Order System</v-toolbar-title>
     </div>
+      <v-toolbar-title style="font-style: italic;" id="test">Softype Food Order System</v-toolbar-title>
     <v-spacer v-for="n in 40" :key="n"></v-spacer>
     <v-btn
       v-on:click="home"

@@ -25,8 +25,15 @@ router.get('/retrieveViands', (req, res) => {
 router.delete("/deleteViand/:id", (adminController.deleteViand));
 
 
-router.route("/updateViand").put(upload.single("img"), (req, res) => {
-    console.log(req.body.update_viand.name)
+router.route("/updateViand/:id").put(upload.single("img"), (req, res) => {
+    console.log(req.file)
+    let viand = JSON.parse(req.body.viand);
+    var imgUrl = `http://localhost:4000/files/`
+
+    // const create_viand = new Viand({
+    //     image: imgUrl + req.file.filename,
+    //     name: viand.name,
+    // });
 
     // Lacking update
 

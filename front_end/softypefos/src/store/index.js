@@ -14,6 +14,7 @@ export default new Vuex.Store({
         order_To_Display: [],
         facts: [],
         facts_To_Edit: {},
+        viand_To_Edit: {},
         user: false
     },
     getters: {
@@ -34,6 +35,9 @@ export default new Vuex.Store({
         },
         getFactsToEdit: state => {
             return state.facts_To_Edit
+        },
+        getViandToEdit: state => { // --------------------
+            return state.viand_To_Edit
         }
     },
     mutations: {
@@ -49,6 +53,14 @@ export default new Vuex.Store({
         addViand(state, viand) {
             state.viands_To_Display.push(viand)
         },
+        addEditedViand(state, viand) { // -------------------
+            state.viands_To_Display.forEach(element => {
+                if (viand._id == viand._id) {
+                    state.viands_To_Display.splice(element, 1)
+                }
+            });
+            state.viands_To_Display.push(viand)
+        },
         removeOrder(state, id) {
             state.viands_To_Order = state.viands_To_Order.filter(order => {
                 if (order._id != id) {
@@ -62,6 +74,9 @@ export default new Vuex.Store({
                     return viand
                 }
             })
+        },
+        setViandToEdit(state, fact) { // -----------------------------
+            state.viand_To_Edit = fact
         },
         deleteFact(state, id) {
             state.facts = state.facts.filter(fact => {
@@ -134,6 +149,16 @@ export default new Vuex.Store({
                     }, 2000);
                     resolve(res)
                 }).catch(err => {
+                    reject(err)
+                })
+            })
+        },
+        UpdateViand({ commit }, id, viand) {
+            return new Promise((resolve, reject) => {
+                http.put(`http://localhost:4000/admin/updateViand/${id}`, viand).then(res =>{
+                    commit("addEditedViand", res.data)
+                    resolve(res)
+                }).catch(err =>{
                     reject(err)
                 })
             })

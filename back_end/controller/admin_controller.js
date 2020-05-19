@@ -34,7 +34,7 @@ exports.deleteViand = (req, res) => {
 
 exports.updateViand = (req, res) => {
     console.log(req.body)
-
+    
     // Lacking update 
 
 }
