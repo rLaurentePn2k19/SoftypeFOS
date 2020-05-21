@@ -14,7 +14,6 @@ export default new Vuex.Store({
         order_To_Display: [],
         facts: [],
         facts_To_Edit: {},
-        viand_To_Edit: {},
         user: false
     },
     getters: {
@@ -35,9 +34,6 @@ export default new Vuex.Store({
         },
         getFactsToEdit: state => {
             return state.facts_To_Edit
-        },
-        getViandToEdit: state => { // --------------------
-            return state.viand_To_Edit
         }
     },
     mutations: {
@@ -53,13 +49,19 @@ export default new Vuex.Store({
         addViand(state, viand) {
             state.viands_To_Display.push(viand)
         },
-        addEditedViand(state, viand) { // -------------------
-            state.viands_To_Display.forEach(element => {
-                if (viand._id == viand._id) {
-                    state.viands_To_Display.splice(element, 1)
+        addEditedViand(state, edited_viand) { // -------------------
+            for(let i = 0 ; i<state.viands_To_Display.length ; i++){
+                if (edited_viand._id == state.viands_To_Display[i]._id) {
+                    state.viands_To_Display.splice(state.viands_To_Display[i], 1)
                 }
-            });
-            state.viands_To_Display.push(viand)
+            }
+            state.viands_To_Display.push(edited_viand)
+            // state.viands_To_Display.forEach(viand => {
+            //     if (edited_viand._id == viand._id) {
+            //         state.viands_To_Display.splice(viand, 1)
+            //     }
+            // });
+            // state.viands_To_Display.push(edited_viand)
         },
         removeOrder(state, id) {
             state.viands_To_Order = state.viands_To_Order.filter(order => {
@@ -74,9 +76,6 @@ export default new Vuex.Store({
                     return viand
                 }
             })
-        },
-        setViandToEdit(state, fact) { // -----------------------------
-            state.viand_To_Edit = fact
         },
         deleteFact(state, id) {
             state.facts = state.facts.filter(fact => {
@@ -153,12 +152,21 @@ export default new Vuex.Store({
                 })
             })
         },
-        UpdateViand({ commit }, id, viand) {
+        UpdateViand({ commit }, viand) { // ----------------------
             return new Promise((resolve, reject) => {
-                http.put(`http://localhost:4000/admin/updateViand/${id}`, viand).then(res =>{
-                    commit("addEditedViand", res.data)
+                http.post(`http://localhost:4000/admin/updateViand`, viand).then(res => {
+                    const viand = {
+                        _id: res.data._id,
+                        _selected: false,
+                        _qty: 1,
+                        _image: res.data.image,
+                        _name: res.data.name
+                    };
+                    setTimeout(() => {
+                        commit("addEditedViand", viand)
+                    }, 2000);
                     resolve(res)
-                }).catch(err =>{
+                }).catch(err => {
                     reject(err)
                 })
             })

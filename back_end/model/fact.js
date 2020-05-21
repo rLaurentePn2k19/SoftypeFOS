@@ -4,7 +4,8 @@ var Schema = mongoose.Schema;
 
 var fact = new Schema({
     title: { type: String, required: true },
-    detail: { type: String, required: true }
+    detail: { type: String, required: true },
+    // displayed: false
 },
     { collection: 'fact' }
 );

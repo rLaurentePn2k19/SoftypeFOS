@@ -28,7 +28,7 @@
         <v-row align="center" justify="center" v-else-if="isSmall">
           <v-col class="text-center" cols="12">
             <div class="text-center">
-              <div id="myDiv">
+              <div id="myDiv" >
                 <h1
                   style="border: 5px solid white; padding: 5%;"
                   v-bind:class="isSmall ? this.smallClass : this.bigClass"

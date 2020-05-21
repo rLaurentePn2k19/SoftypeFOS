@@ -21,7 +21,7 @@ for (let x = 0; x < devRoutes.length; x++) {
 let routes = [
     {
         path: '/',
-        name: 'home',
+        name: '',
         component: resolve => require(['@/components/modules/user/Homepage.vue'], resolve),
         beforeEnter: beforeEnter
     }

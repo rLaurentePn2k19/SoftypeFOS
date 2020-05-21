@@ -4,9 +4,9 @@ const upload = require('../middlewares/multer');
 const adminController = require('../controller/admin_controller');
 const Viand = require('../model/viand');
 
-
 router.route("/addViand").post(upload.single("img"), (req, res) => {
-    console.log(req.file)
+    console.log(req.file, " request file")
+
     let viand = JSON.parse(req.body.viand);
     var imgUrl = `http://localhost:4000/files/`
 
@@ -19,25 +19,27 @@ router.route("/addViand").post(upload.single("img"), (req, res) => {
 
 router.get('/retrieveViands', (req, res) => {
     adminController.RetrieveAllViand(res);
-    console.log(res)
 })
 
 router.delete("/deleteViand/:id", (adminController.deleteViand));
 
+router.route("/updateViand").post(upload.single("viand_img"), (req, res) => {
+    console.log(req.file.filename, " --- req.file.filename")
 
-router.route("/updateViand/:id").put(upload.single("img"), (req, res) => {
-    console.log(req.file)
-    let viand = JSON.parse(req.body.viand);
     var imgUrl = `http://localhost:4000/files/`
+    
+    const edit_viand = {
+        id: req.body.viand_id,
+        image: imgUrl + req.file.filename,
+        name: req.body.viand_name,
+    }
 
-    // const create_viand = new Viand({
-    //     image: imgUrl + req.file.filename,
-    //     name: viand.name,
-    // });
-
-    // Lacking update
-
+    console.log(edit_viand , " obj for edit")
+    // console.log(res , " res rs rs");
+    adminController.updateViand(edit_viand, res)
 })
+// router.put("/updateViand/:id", adminController.updateViand);
+
 
 router.post("/addFact", adminController.postFact);
 

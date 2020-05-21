@@ -167,6 +167,8 @@ export default {
               () => (
                 (this.loading = false),
                 (this.dialog = false),
+                (this.viand.name = ""),
+                (this.viand.imgs = null),
                 this.$swal.fire(
                   `${_viand.name} is successfully added.`,
                   " ",
@@ -180,9 +182,6 @@ export default {
           .catch(err => {
             console.log(err);
           });
-        this.viand.name = "";
-        this.viand.imgs = null;
-        // this.$refs.viand_form.reset()
       }
     }
   }
